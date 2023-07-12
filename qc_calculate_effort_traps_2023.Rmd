@@ -1,0 +1,236 @@
+---
+title: "Add Fyke Effort"
+author: "Catarina Pien"
+date: "8/13/2021"
+output: ''
+editor_options: 
+  chunk_output_type: console
+---
+
+## Modified from N. Kwan 8 July, 2020 from FASTR 
+## Edited by C. Pien on 13 August, 2021
+## Edited by C. Pien on 4 November, 2021
+## last filtered to starting 2010-2020, though some QA/QC covers back to 2000. 
+## Edited by C. Pien on 6 December, 2021 to include some of Nicole's finds
+## Edited by C. Pien on 11 May, 2021 to include 2021 data
+## Edited by L. Vance on July 2023 to include through June 2023 data
+
+# Read in data and clean
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+
+#bring in trap effort from YBFMP Access DB query of "TrapEffort" and "Sample" tables
+sample <- read.csv("data_raw/Sample_20230707.csv")
+effort <- read.csv("data_raw/TrapEffort_20230710.csv")
+filenames <- list.files("data_raw/Catch", pattern="*.csv", full.names=TRUE)
+Catchread <- lapply(filenames, read.csv)
+catch <- bind_rows(Catchread, .id = "column_label")
+
+# ------------------------------
+
+# Clean up columns from previous and join together
+stationsOfInterest <- c("PCS", "STTD")
+methods <- c("FKTR", "RSTR")
+DateFirst <- as.Date("1998-01-01")
+DateLast <- as.Date("2023-06-30")
+  
+
+f_cleancolumnsandmerge <- function(stationsOfInterest, methods, DateFirst, DateLast) {
+  fykerstr <- sample %>% 
+    dplyr::mutate(Date = lubridate::mdy(SampleDate)) %>%
+    dplyr::select(-c(VegetationRank:DataCorrectionComments)) %>%
+    dplyr::filter(StationCode %in% stationsOfInterest) %>%
+    dplyr::filter(MethodCode %in% methods) %>%
+    dplyr::filter(Date > DateFirst & Date < DateLast)
+  effort2 <- dplyr::select(effort, -c(s_ColLineage:s_Lineage))
+  sampeffort <- left_join(fykerstr, effort2) 
+}
+
+sampeffort <- f_cleancolumnsandmerge(stationsOfInterest, methods, DateFirst, DateLast)
+# Failed to parse is (sample ID 6378) that does not have a date included; digging in the Access database shows there was no fish or environmental data associated with this date so it was probably a mis-entry & can be removed
+
+```
+
+# QA/QC
+
+Remove NAs
+```{r}
+#search for status and time NA's/blanks
+summary(sampeffort)
+status.na <- filter(sampeffort, is.na(TrapStatus) | TrapStatus == "")
+time.na <- filter(sampeffort, is.na(SampleTime) | SampleTime == "")
+date.na <- filter(sampeffort, is.na(Date) | SampleDate == "")
+
+#remove rows with comments that indicate the fyke was not set
+fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 9407, 9408, 9409, 9410, 9485, 9950)
+#search records and remove duplicated/mis-entered samples
+dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
+
+f_qaqc1 <- function(fykeNotset_ids, dataEntry_ids) {
+sampeffort %>%
+  dplyr::filter(!(SampleID %in% fykeNotSet_ids)) %>%
+  dplyr::filter(!(SampleID %in% dataEntry_ids))
+}
+
+sampeffort2 <- f_qaqc1(fykeNotSet_ids, dataEntry_ids)
+```
+
+Fill in blank/NA entries and fix incorrect entries
+```{r}
+sampeffort3 <- sampeffort2
+#Some samples didn't have status entered
+sampeffort3$TrapStatus[sampeffort2$SampleID == 7447] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 3485] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 5028] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 1917] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 6820] <- "Pull"
+
+#some marked as set end up having fish data with them so change to "check" for the purpose of not removing them
+sampeffortcatch <- left_join(sampeffort3, catch) %>%
+  select(-c(WeatherCode:SampleRowID, TotalLength:FishTagID, s_ColLineage:s_Lineage))
+set <- filter(sampeffortcatch, TrapStatus == "Set" & !is.na(OrganismCode))
+
+# Set: 1001, 2811, 2797, 3308, 2363, 2352, 2354, 2358
+# These should be set to catch = "NA" in the future
+sampeffort3$TrapStatus[sampeffort2$SampleID == 2810] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 23] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 6237] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 2892] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 8195] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 8981] <- "Check"
+
+# Older data (from Nicole)
+sampeffort3$TrapStatus[sampeffort2$SampleID == 1697] <- "Pull"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 1626] <- "Set"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 2510] <- "Set"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 3011] <- "Set"
+
+# Incorrectly entered
+sampeffort3$TrapStatus[sampeffort2$SampleID == 3590] <- "Check"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 3589] <- "Set"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 6237] <- "Set"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 8195] <- "Set"
+
+#two dates with no time recorded (sample ID 6954), add in an approximate time based on check times the day before and after so hours for that day and the day after can be appropriately calculated
+sampeffort3$SampleTime[sampeffort2$SampleID == 6954] <- "11:00:00"
+sampeffort3$SampleTime[sampeffort2$SampleID == 6431] <- "10:40:00"
+sampeffort3$SampleTime[sampeffort2$SampleID == 7657] <- "10:40:00" # looks like 16:40 but probably 10:40
+
+# Incorrect Dates
+sampeffort3$Date[sampeffort2$SampleID == 3501] <- as.Date("2009-07-09")
+sampeffort3$SampleDate[sampeffort2$SampleID == 3501] <- "7/9/2009"# Missing entry from 7/8/2008 and other entries in July 2008. It says pulled for the season on 6/27/2008, but there are more data sheets from July in the scanned data sheets. Listed in effort and samp, but for some reason not showing up 
+sampeffort3$Date[sampeffort2$SampleID == 3589] <- as.Date("2010-03-22")
+sampeffort3$SampleDate[sampeffort2$SampleID == 3589] <- "3/22/2010"
+
+sampeffort3$Date[sampeffort2$SampleID == 7558] <- as.Date("2017-05-24")
+sampeffort3$SampleDate[sampeffort2$SampleID == 7558] <- "5/24/2017"
+
+sampeffort3$Date[sampeffort2$SampleID == 7558] <- as.Date("2017-05-24")
+sampeffort3$SampleDate[sampeffort2$SampleID == 7558] <- "5/24/2017"
+
+# There are two entries for 6/13/2017. Chose this one to be the next day because of SampleID pattern, but not 100% sure which one was which day.
+sampeffort3$Date[sampeffort2$SampleID == 7620] <- as.Date("2017-06-14")
+sampeffort3$SampleDate[sampeffort2$SampleID == 7620] <- "6/14/2017"
+
+# There are two entries for 6/27/2017. Chose this one to be the next day because of the sample crew but not 100% sure.
+sampeffort3$Date[sampeffort2$SampleID == 7657] <- as.Date("2017-06-28")
+sampeffort3$SampleDate[sampeffort2$SampleID == 7657] <- "6/28/2017"
+
+# 2/19 was president's day and fyke was set 2/20 (Tuesday), so guessing screw trap was also set 2/20 and not 2/19. 
+sampeffort3$Date[sampeffort2$SampleID == 7966] <- as.Date("2018-02-20")
+sampeffort3$SampleDate[sampeffort2$SampleID == 7966] <- "2/20/2018"
+
+```
+
+# Calculate time difference (effort hours)
+```{r}
+#create a column with date & time together
+sampeffort3$DateTime = mdy_hms(paste(sampeffort3$SampleDate, sampeffort3$SampleTime))
+str(sampeffort3)
+
+#calculate effort in hours
+sampeffortHours <- sampeffort3 %>%
+  arrange(DateTime) %>%
+  select(-SampleDate) %>%
+  group_by(MethodCode) %>%
+  mutate(effort.hrs = ifelse(TrapStatus == "Set", 0, as.numeric(difftime(DateTime,lag(DateTime), units = "hours")))) %>%
+  arrange(MethodCode, DateTime) 
+
+# remove last date in 1999 used to calculate hours for Jan'20 (sample ID 378)
+# sampeffort.e.2<-sampeffort.e[!(sampeffort.e$SampleID==378),]
+```
+
+# QA/QC hours
+```{r}
+#search for errors via plotting
+ggplot(sampeffortHours, aes(x=DateTime, y=effort.hrs)) + geom_point()
+
+# limit to doing this starting 2010 for now.
+qc <- sampeffortHours %>%
+  mutate(doweek = wday(DateTime, label= TRUE)) %>%
+  select(SampleID, StationCode, Date, doweek, effort.hrs, TrapStatus, SampleTime, everything()) %>%
+  filter(Date> as.Date("2009-12-31")) %>%
+  arrange(MethodCode, DateTime)
+
+outliers <- subset(qc, effort.hrs>40) %>%
+  arrange(MethodCode, desc(effort.hrs))
+
+# Fix some values
+qc2 <- qc 
+
+# Calculate median for an estimate replacement value
+qc2 %>% group_by(MethodCode) %>%
+  summarize(median(effort.hrs))
+
+#FYKE
+qc2$effort.hrs[qc$SampleID == 2675] <- 119 # Need a "set" entry for 10/5/2007 @ 10:30. Data sheet says set at Friday 10:30
+qc2$effort.hrs[qc$SampleID == 6566] <- 24 # Added estimate, missing a "set" entry for 10/5/2015. Don't see a data sheet. 
+qc2$effort.hrs[qc$SampleID == 7827] <- 24 # Added estimate, missing a "set" entry for 11/20/2017. Don't see a data sheet. 
+qc2$effort.hrs[qc$SampleID == 994] <- 24 # Added estimate, possibly missing a "set" entry for 2/18/2008, but not sure. Don't see a data sheet. 
+qc2$effort.hrs[qc$SampleID == 2980] <- 24 # Added estimate, possibly missing a "set" entry for 5/22/2008, but not sure. Don't see a data sheet. 
+qc2$effort.hrs[qc$SampleID == 3131] <- 24 # Added estimate, possibly missing a "set" entry for 11/4/2008, but not sure. Don't see a data sheet.
+qc2$effort.hrs[qc$SampleID == 2858] <- 24 # Added estimate, possibly missing a "set" entry for 11/4/2008, but not sure. Don't see a data sheet.
+qc2$effort.hrs[qc$SampleID == 7827] <- 24 # Added estimate, possibly missing a "set" entry for 11/20/2017, but not sure. Don't see a data sheet.
+qc2$effort.hrs[qc$SampleID == 9140] <- 24 # 12/2/2020 PCS not found in database. Needs to be entered (data sheet exists).
+# RSTR
+qc2$effort.hrs[qc$SampleID == 3782] <- 3.5 # Not sure if this is right, but estimated
+qc2$effort.hrs[qc$SampleID == 8505] <- 23 # 4/10/2019 STTD not found in database. Needs to be entered (data sheet exists).
+
+#saw some odd ones where effort = 0, sample ID: 6598 (duplicated entry), 7065 (duplicated entry), 8013 (duplicated entry) - remove all duplicates, be sure to make sure fish data matches up okay
+  qc2<-qc2[!(qc2$SampleID==6598),]
+  qc2<-qc2[!(qc2$SampleID==7065),]
+  qc2<-qc2[!(qc2$SampleID==8013),]
+
+#search for status NA's and change value in cell to keep them from being removed along with the 4's
+qc2$GearConditionCode[is.na(qc2$GearConditionCode)] <- "not entered"
+# Remove Condition Code = 4 (because that means fish were not sampled)
+qc3 <- filter(qc2, GearConditionCode !=4)
+
+#plot again
+# Replot
+ggplot(qc3, aes(x=DateTime, y=effort.hrs)) + geom_point() + facet_grid(~MethodCode)+
+  scale_x_datetime(date_breaks = "6 months")
+```
+
+# Double check
+```{r}
+#make sure all have effort hours
+nas <- dplyr::filter(qc3, is.na(effort.hrs))
+
+#change ID 6954 back to no time entry so it matches fish data
+# qc.sampeffort$DateTime[qc.sampeffort$SampleID == 6954] <- NA
+
+#filter down to only include date, station, method, and hours
+sampeffort.hours<- select(qc3, c(StationCode, MethodCode, Date, DateTime, SampleID, TrapStatus, Tide, effort.hrs, Comments)) %>%
+  rename(SampleDate = Date,
+         Datetime = DateTime) %>%
+  filter(!is.na(effort.hrs)) %>%
+  arrange(MethodCode, Datetime)
+```
+
+#write new .csv based on calculated effort
+```{r}
+write.csv(sampeffort.hours, file = "data_raw/YBFMP_TrapHours_2010_2023.csv", row.names = FALSE)
+```
+
