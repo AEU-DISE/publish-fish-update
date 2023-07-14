@@ -34,6 +34,8 @@ stationsOfInterest <- c("PCS", "STTD")
 methods <- c("FKTR", "RSTR")
 DateFirst <- as.Date("1998-01-01")
 DateLast <- as.Date("2023-07-01")
+DateLast <- as.Date("2023-06-30")
+
   
 
 f_cleancolumnsandmerge <- function(stationsOfInterest, methods, DateFirst, DateLast) {
@@ -62,6 +64,7 @@ status.na <- filter(sampeffort, is.na(TrapStatus) | TrapStatus == "")
 time.na <- filter(sampeffort, is.na(SampleTime) | SampleTime == "")
 date.na <- filter(sampeffort, is.na(Date) | SampleDate == "")
 
+
 PCS <- filter(status.na, StationCode == "PCS")
 STTD <- filter(status.na, StationCode == "STTD")
 
@@ -70,6 +73,10 @@ fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9407, 9408, 9409, 9410, 
 
 # 7641, 8050, 9261, 9505, 9515 - screw trap not set 
 
+
+
+#remove rows with comments that indicate the fyke was not set
+fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 9407, 9408, 9409, 9410, 9485, 9950)
 
 #search records and remove duplicated/mis-entered samples
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
