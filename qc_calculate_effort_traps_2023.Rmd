@@ -21,8 +21,8 @@ library(tidyverse)
 library(lubridate)
 
 #bring in trap effort from YBFMP Access DB query of "TrapEffort" and "Sample" tables
-sample <- read.csv("data_raw/Sample_20230707.csv")
-effort <- read.csv("data_raw/TrapEffort_20230710.csv")
+sample <- read.csv("data_raw/Sample_20230714.csv")
+effort <- read.csv("data_raw/TrapEffort_20230714.csv")
 filenames <- list.files("data_raw/Catch", pattern="*.csv", full.names=TRUE)
 Catchread <- lapply(filenames, read.csv)
 catch <- bind_rows(Catchread, .id = "column_label")
@@ -34,8 +34,6 @@ stationsOfInterest <- c("PCS", "STTD")
 methods <- c("FKTR", "RSTR")
 DateFirst <- as.Date("1998-01-01")
 DateLast <- as.Date("2023-07-01")
-DateLast <- as.Date("2023-06-30")
-
   
 
 f_cleancolumnsandmerge <- function(stationsOfInterest, methods, DateFirst, DateLast) {
