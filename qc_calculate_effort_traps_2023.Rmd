@@ -13,7 +13,7 @@ editor_options:
 ## last filtered to starting 2010-2020, though some QA/QC covers back to 2000. 
 ## Edited by C. Pien on 6 December, 2021 to include some of Nicole's finds
 ## Edited by C. Pien on 11 May, 2021 to include 2021 data
-## Edited by L. Vance on July 2023 to include through June 2023 data
+## Edited by L. Vance on 14 July, 2023 to include through June 2023 data
 
 # Read in data and clean
 ```{r setup, include=FALSE}
@@ -67,14 +67,10 @@ PCS <- filter(status.na, StationCode == "PCS")
 STTD <- filter(status.na, StationCode == "STTD")
 
 #remove rows with comments that indicate the fyke was not set
-fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9407, 9408, 9409, 9410, 9485, 9950)
+fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 9407, 9408, 9409, 9410, 9485, 9950)
 
 # 7641, 8050, 9261, 9505, 9515 - screw trap not set 
 
-
-
-#remove rows with comments that indicate the fyke was not set
-fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 9407, 9408, 9409, 9410, 9485, 9950)
 
 #search records and remove duplicated/mis-entered samples
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
