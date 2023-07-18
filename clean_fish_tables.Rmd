@@ -33,21 +33,21 @@ Sys.setenv(TZ = "America/Los_Angeles")
 ## 1. Save tables into Data folder.
 ## 2. Read in file
 ```{r importdata}
-# Data retrieved 7/2023 from Access unless otherwise labeled
+# Data retrieved 7/14/2023 from Access unless otherwise labeled
 # Read in catch from folder
 filenames <- list.files("data_raw/Catch", pattern="*.csv", full.names=TRUE)
 Catchread <- lapply(filenames, read.csv)
 # Bind fish catch files together
 fish_catch <- bind_rows(Catchread, .id = "column_label")
-effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2021.csv")
-fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_info.csv")
-fish_ref <- read.csv("data_raw/Sample_20230707.csv")
-fish_tax <- read.csv("data_raw/OrganismsLookUp_20230710.csv")
+effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2023.csv")
+fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info.csv")
+fish_ref <- read.csv("data_raw/Sample_20230714.csv")
+fish_tax <- read.csv("data_raw/OrganismsLookUp_20230714.csv")
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
-smelt_gen <- read.csv("data_raw/SmeltGenetics_20230710.csv")
-salm_gen <- read.csv("data_raw/SalmGenetics_20230710.csv")
-seine <- read.csv("data_raw/SeineEffort_20230710.csv")
-trap <- read.csv("data_raw/TrapEffort_20230710.csv")
+smelt_gen <- read.csv("data_raw/SmeltGenetics_20230714.csv")
+salm_gen <- read.csv("data_raw/SalmGenetics_20230714.csv")
+seine <- read.csv("data_raw/SeineEffort_20230714.csv")
+trap <- read.csv("data_raw/TrapEffort_20230714.csv")
 #cwt <- read.csv("data_raw/CWT_20210722.csv")
 iepfishcodes <- readxl::read_excel("data_raw/IEPFishCodes.xlsx", sheet = 2) %>% as.data.frame() %>%
   select(IEPFishCode, CommonName, Taxa = ScientificName) %>%
@@ -89,8 +89,8 @@ fish_ref_clean <- fish_ref %>%
          GearCode = GearID,
          EventID = SampleID)%>%
   mutate(across(.cols = c(GearCode, WeatherCode), .fns = na_if, "")) %>%
-    filter(lubridate::year(Datetime) < 2022) %>%
-  mutate(SampleAltered = ifelse(SampleDate<ymd("2022-02-22"), NA, SampleAltered)) %>%
+    filter(lubridate::year(Datetime) < 2024) %>%
+  mutate(SampleAltered = ifelse(SampleDate<ymd("2023-07-01"), NA, SampleAltered)) %>%
   select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, WeatherCode, VegetationRank, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered) %>%
   arrange(Datetime)
 
@@ -183,7 +183,7 @@ fish_catch_clean <- left_join(fish_catch_clean0, fish_ref_clean %>% select(Event
   mutate(SampleID = paste0(format(Datetime,"%Y%m%d_%H%M"), "_", StationCode, "_", OrganismCode),
          OrganismID = ifelse(!is.na(ForkLength) | !is.na(TotalLength), paste0(Year, "_", OrganismCode, num), NA)) %>%
   ungroup() %>%   
-  filter(Year<2022) %>%
+  filter(Date<"2023-07-01") %>%
   select( -Datetime, -Date,  -StationCode, -num, -Year)
 
 # Make all consistent "minus"
@@ -349,7 +349,10 @@ salm_gen_clean$FishGenID <- gsub("min", "minus", salm_gen_clean$FishGenID)
 ### b) Remove known incorrect IDs, replace with corrected dates from effort file
 ```{r}
 #remove rows with comments that indicate the fyke was not set (copied over from effort file)
-fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 9407, 9408, 9409, 9410, 9485)
+# 7641, 8050, 9261, 9505, 9515 - screw trap not set (copied over from effort file)
+fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 
+                    9406, 9407, 9408, 9409, 9410, 9485, 9505,
+                    9515, 9920, 9950)
 #remove duplicated/mis-entered samples (copied over from effort file)
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
 
