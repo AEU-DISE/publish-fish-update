@@ -43,13 +43,13 @@ Catchread <- lapply(filenames, read.csv)
 fish_catch <- bind_rows(Catchread, .id = "column_label")
 effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2023.csv")
 fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info.csv")
-fish_ref <- read.csv("data_raw/Sample_20230714.csv")
+fish_ref <- read.csv("data_raw/Sample_20230720.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20230714.csv")
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
 smelt_gen <- read.csv("data_raw/SmeltGenetics_20230714.csv")
 salm_gen <- read.csv("data_raw/SalmGenetics_20230714.csv")
-seine <- read.csv("data_raw/SeineEffort_20230714.csv")
-trap <- read.csv("data_raw/TrapEffort_20230714.csv")
+seine <- read.csv("data_raw/SeineEffort_20230720.csv")
+trap <- read.csv("data_raw/TrapEffort_20230720.csv")
 #cwt <- read.csv("data_raw/CWT_20210722.csv")
 iepfishcodes <- readxl::read_excel("data_raw/IEPFishCodes.xlsx", sheet = 2) %>% as.data.frame() %>%
   select(IEPFishCode, CommonName, Taxa = ScientificName) %>%
