@@ -21,8 +21,8 @@ library(tidyverse)
 library(lubridate)
 
 #bring in trap effort from YBFMP Access DB query of "TrapEffort" and "Sample" tables
-sample <- read.csv("data_raw/Sample_20230714.csv")
-effort <- read.csv("data_raw/TrapEffort_20230714.csv")
+sample <- read.csv("data_raw/Sample_20230720.csv")
+effort <- read.csv("data_raw/TrapEffort_20230720.csv")
 filenames <- list.files("data_raw/Catch", pattern="*.csv", full.names=TRUE)
 Catchread <- lapply(filenames, read.csv)
 catch <- bind_rows(Catchread, .id = "column_label")
@@ -203,10 +203,13 @@ qc2$effort.hrs[qc$SampleID == 2980] <- 24 # Added estimate, possibly missing a "
 qc2$effort.hrs[qc$SampleID == 3131] <- 24 # Added estimate, possibly missing a "set" entry for 11/4/2008, but not sure. Don't see a data sheet.
 qc2$effort.hrs[qc$SampleID == 2858] <- 24 # Added estimate, possibly missing a "set" entry for 11/4/2008, but not sure. Don't see a data sheet.
 qc2$effort.hrs[qc$SampleID == 7827] <- 24 # Added estimate, possibly missing a "set" entry for 11/20/2017, but not sure. Don't see a data sheet.
-qc2$effort.hrs[qc$SampleID == 9140] <- 24 # 12/2/2020 PCS not found in database. Needs to be entered (data sheet exists).
+# qc2$effort.hrs[qc$SampleID == 9140] <- 24 # 12/2/2020 PCS not found in database. Needs to be entered (data sheet exists).
+
 # RSTR
 qc2$effort.hrs[qc$SampleID == 3782] <- 3.5 # Not sure if this is right, but estimated
-qc2$effort.hrs[qc$SampleID == 8505] <- 23 # 4/10/2019 STTD not found in database. Needs to be entered (data sheet exists).
+# qc2$effort.hrs[qc$SampleID == 8505] <- 23 # 4/10/2019 STTD not found in database. Needs to be entered (data sheet exists).
+
+# 12/2/2020 and 4/10/2019 entered into database on 7/20/2023, included in 2023 data pull before publishing
 
 #saw some odd ones where effort = 0, sample ID: 6598 (duplicated entry), 7065 (duplicated entry), 8013 (duplicated entry) - remove all duplicates, be sure to make sure fish data matches up okay
   qc2<-qc2[!(qc2$SampleID==6598),]
