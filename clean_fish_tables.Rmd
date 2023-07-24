@@ -195,7 +195,7 @@ fish_catch_clean$FishGenID <- gsub("min", "minus", fish_catch_clean$FishGenID)
 # Checks of variable codes
 unique(fish_catch_clean$MarkCode)
 unique(fish_catch_clean$StageCode) ### Check if there are changes
-unique(fish_catch_clean$SpawningCondition)
+unique(fish_catch_clean$Expression) ##updated for renamed column spawningcondition -> expression
 unique(fish_catch_clean$Sex)
 unique(fish_catch_clean$RaceByLength)
 
@@ -406,6 +406,8 @@ SampleComments <- Sample_effort_seine %>%
 
 #write.csv(SampleComments, "SampleComments.csv")
 check2021 <- filter(SampleComments, year(SampleDate) == 2021 & FieldComments!="")
+check2022 <- filter(SampleComments, year(SampleDate) == 2022 & FieldComments!="")
+check2023 <- filter(SampleComments, year(SampleDate) == 2023 & FieldComments!="")
 ```
 
 ### e) Make changes made to condition code
