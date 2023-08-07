@@ -421,14 +421,14 @@ shouldbe4 <- c(4016, 4014, 4013, 4015, 4340, 4947, 5471, 5503, 5532, 8317, 6039,
 shouldbe3 <- c(8282, 7564)# very poor condition
 shouldbe2 <- c(1524, 1525,1401, 2680, 4228, 5948, 7587, 6865, 6109, 6849, 761, 762, 829, 835, 1086, 1113, 7561,
                #screw trap
-               1401, 5279, 6540, 9908, 10106, 10280)
+               1401, 5279, 6540, 9908, 10106, 10280, 8529)
 # no seine (hyacinth, too shallow, too deep, other veg): 4016, 4014, 4013, 4015, 4340, 4947, 5471, 5503, 5532, 6039, 6849 (check), 6256 (tide is too high??), 6991 (check), 9812, 9835, 9857, 9919, 10013, 10072, 10074, 10078, 10090, 10091, 10117, 10118, 
 # twisted bag: 5948, 7587, (2022/2023 finds correctly marked as cond code 2)
 # flipped seine: 6109
 # clogged cone/debris: 1401
 # might have lost some catch: 2680
 # fyke not set to full depth: 761, 762, 1113
-# fish escape: 829, 835, 1086, 7561, 7564, 9908, 10106, 10280
+# fish escape: 829, 835, 1086, 7561, 7564, 9908, 10106, 10280, 8529
 ```
 
 ### f) Add flag for change to sample
@@ -603,7 +603,7 @@ par(mfrow = c(2,2))
 ggplot(fish_WQ_outliers3) + geom_point(aes(WaterTemp, DO, color = Region))
 ggplot(fish_WQ_outliers3) + geom_point(aes(Conductivity, SpecificConductance, color = Region))
 ggplot(fish_WQ_outliers3) + geom_point(aes(Secchi, Turbidity, color = Region))
-phtemp <- ggplot(fish_WQ_outliers3) + geom_point(aes(pH, WaterTemp, color = Region, text = paste("EventID:", EventID)))
+phtemp <- ggplot(fish_WQ_outliers3) + geom_point(aes(pH, WaterTemp, color = Region))
 ggplotly(phtemp)
 
 #4114 and 5980 already flagged
