@@ -25,6 +25,7 @@ library(magrittr)
 library(kableExtra)
 library(viridis)
 library(plotly)
+library(tidylog)
 
 Sys.setenv(TZ = "America/Los_Angeles")
 ```
@@ -647,7 +648,7 @@ BL_outliers <- Outliers0 %>%
 filter(Region == "BL") %>%
 ggplot() + 
   geom_point(aes(Datetime, Value, colour = factor(Outlier), text = Index), size = 1) + 
-  facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw() + labs(title = "AL")
+  facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw() + labs(title = "BL")
 BL_outliers
 
 # AL Sites
@@ -655,7 +656,7 @@ Outliers0 %>%
 filter(Region == "AL") %>%
 ggplot() + 
   geom_point(aes(Datetime, Value, colour = factor(Outlier)), size = 1) + 
-  facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw()  + labs(title = "BL")
+  facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw()  + labs(title = "AL")
 
 # Other
 Outliers0 %>%
