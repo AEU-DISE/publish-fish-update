@@ -43,7 +43,7 @@ Catchread <- lapply(filenames, read.csv)
 # Bind fish catch files together
 fish_catch <- bind_rows(Catchread, .id = "column_label")
 effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2023.csv")
-fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info.csv")
+fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20230815.csv")
 fish_ref <- read.csv("data_raw/Sample_20230720.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20230714.csv")
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
