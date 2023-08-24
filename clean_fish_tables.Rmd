@@ -395,7 +395,15 @@ Sample_effort_seine <- left_join(Sample_effort, seine_clean_qc) %>%
   mutate(Tide = ifelse(MethodCode == "BSEIN", Tide_Seine,
                        ifelse(MethodCode %in% c("RSTR", "FKTR"), Tide_Trap, NA)))%>%
   arrange(MethodCode)%>%
+  mutate(StationCode = case_when(StationCode == "RD22" ~ "CCS7",
+                                 TRUE ~ StationCode))
   select(-c(ConditionCode, TrapComments, SeineComments, Tide_Trap, Tide_Seine))
+#renamed RD22 to CCS7 because the sites are actually two different locations, RD22 is 
+# only used for NDFS/lower trophic
+  
+#check that sites were renamed correctly  
+CCS7 <- filter(Sample_effort_seine, StationCode == "CCS7")
+
 ```
 
 ### d) Export comments and evaluate. 
