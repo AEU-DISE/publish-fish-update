@@ -497,7 +497,8 @@ Sample_alone <- Sample_effort_clean %>%
 # Create regions for visualization -----------------------
 AL <- c("AL1", "AL2", "AL3", "AL4", "LIS")
 BL <- c("BL1", "BL2", "BL3", "BL4", "BL5", "BL6", "STTD", "PCS")
-Other <- c("YB", "FW1", "SB1",  "RD22", "YBI80", "SB2", "LIHF", "LIHFS", "CCS7")
+Other <- c("YB", "FW1", "SB1", "YBI80", "SB2", "LIHF", "LIHFS", "CCS7")
+#removed RD22 - name changed confirmed
 ```
 
 ### b) Separate out WQ
