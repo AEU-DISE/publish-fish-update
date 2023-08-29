@@ -752,6 +752,10 @@ fish_catch_QC2 <- fish_catch_QC %>%
          Count = replace(Count, OrganismID %in% Count2, 2),
          ForkLength = replace(ForkLength, OrganismID %in% FLNA, NA)) %>%
   filter(!(OrganismID %in% None))
+
+
+#add in duplicate removal found in JTs beach seine analysis here --- 
+
 ```
 
 ### c) No catch
