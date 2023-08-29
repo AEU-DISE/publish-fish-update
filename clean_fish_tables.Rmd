@@ -756,6 +756,20 @@ fish_catch_QC2 <- fish_catch_QC %>%
 
 #add in duplicate removal found in JTs beach seine analysis here --- 
 
+# filter out duplicate samples from resample on 6-27-2011 due to gear issues
+# Station: BL5, date: 6-27-2011 fish: LP, GSN, MSS, SAPM, SPLT, STB, Tule Perch, Shimo Goby 
+# event ID 4780
+
+# remove duplicate on 2-3-2016
+# station BL1 - BGS, 2-3-2016
+
+# remove CHN recorded with count of 3 on 4-27-2017
+# station BL5, CHN, 4-27-2017
+
+# BL6, 10-22-2015 duplicate entry
+# BL5, 3-29-2016 MSS with count of 2 - delete
+# AL1, 7-18-207 duplicate entry
+
 ```
 
 ### c) No catch
