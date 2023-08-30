@@ -678,6 +678,8 @@ ggplot() +
 
 ```{r}
 OutliersToCheck <- filter(Outliers0, Outlier >=1)
+
+check2223 <- filter(OutliersToCheck, (Year == "2022" | Year == "2023"))
 ```
 
 ### k) Convert outliers to wide format
