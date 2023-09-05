@@ -48,7 +48,7 @@ fish_ref <- read.csv("data_raw/Sample_20230720.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20230714.csv")
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
 smelt_gen <- read.csv("data_raw/SmeltGenetics_20230714.csv")
-salm_gen <- read.csv("data_raw/SalmGenetics_20230714.csv")
+salm_gen <- read.csv("data_raw/SalmGenetics_20230905.csv")
 seine <- read.csv("data_raw/SeineEffort_20230720.csv")
 trap <- read.csv("data_raw/TrapEffort_20230720.csv")
 #cwt <- read.csv("data_raw/CWT_20210722.csv")
@@ -758,9 +758,13 @@ fish_catch_QC2 <- fish_catch_QC %>%
 
 #add in duplicate removal found in JTs beach seine analysis here --- 
 
-# filter out duplicate samples from resample on 6-27-2011 due to gear issues
+# filter out duplicate samples from resample on 6-27-2011 due to gear issues (partial bag twist)
 # Station: BL5, date: 6-27-2011 fish: LP, GSN, MSS, SAPM, SPLT, STB, Tule Perch, Shimo Goby 
-# event ID 4780
+# event ID 4780 - reference data sheet for correct org ID and FL
+
+BL5 <- filter(fish_catch_QC2, EventID == 4780)
+  
+
 
 # remove duplicate on 2-3-2016
 # station BL1 - BGS, 2-3-2016
