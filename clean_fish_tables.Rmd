@@ -91,7 +91,7 @@ fish_ref_clean <- fish_ref %>%
          MicrocystisRank = MicrocystisVisualRank,
          GearCode = GearID,
          EventID = SampleID)%>%
-  filter(!(EventID == "6600" | EventID == "7749"))  #this removes 2 duplicated entries as found in JTs beach seine analysis
+  filter(!(EventID == "6600" | EventID == "7749")) %>% #filters 2 duplicated entries found in JTs beach seine analysis  
   mutate(across(.cols = c(GearCode, WeatherCode), .fns = na_if, "")) %>%
     filter(lubridate::year(Datetime) < 2024) %>%
   mutate(SampleAltered = ifelse(SampleDate<ymd("2023-07-01"), NA, SampleAltered)) %>%
