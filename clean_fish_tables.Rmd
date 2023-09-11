@@ -208,10 +208,13 @@ noCount <- filter(fish_catch_clean, Count == 0 | is.na(Count) | Count == "")
 needRace <- filter(fish_catch_clean, is.na(RaceByLength) & OrganismCode == "CHN" & !is.na(ForkLength))
 
 # find duplicated data 
-BL1 <- filter(fish_catch_clean, EventID == "6760")
-BL1dup <- filter(fish_catch_clean, EventID == "6758") #no FL entered so this is duplicated entry (discovered in JTs beach seine analysis)
-BL52011 <- filter(fish_catch_clean, EventID == "4779")
-BL52011dup <- filter(fish_catch_clean, EventID == "4780") #second seine done due to gear issue - should not have been entered (discovered in JTs beach seine analysis)
+BL12016 <- filter(fish_catch_clean, EventID == "6760")
+BL12016dup <- filter(fish_catch_clean, EventID == "6758") #no FL entered so this is duplicated entry (discovered in JTs beach seine analysis) - remove
+BL52011 <- filter(fish_catch_clean, EventID == "4779") # seine was re-done
+BL52011dup <- filter(fish_catch_clean, EventID == "4780") #second seine done due to gear issue - should not have been entered (discovered in JTs beach seine analysis) 
+
+BL52017 <- filter(fish_catch_clean, EventID == "7534") #first seine
+BL52017dup <- filter(fish_catch_clean, EventID == "7533") #second seine done to catch CHN for diet study, remove per find in JTs beach seine analysis paper - remove this entry
 
 ```
 
