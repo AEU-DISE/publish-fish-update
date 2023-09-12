@@ -91,7 +91,8 @@ fish_ref_clean <- fish_ref %>%
          MicrocystisRank = MicrocystisVisualRank,
          GearCode = GearID,
          EventID = SampleID)%>%
-  filter(!(EventID == "6600" | EventID == "7749")) %>% #filters 2 duplicated entries found in JTs beach seine analysis
+  filter(!(EventID == "6600" | EventID == "7749" | EventID == "4779" |
+           EventID == "6861" | EventID == "6862" | EventID == "7533")) %>% #filters 2 duplicated entries found in JTs beach seine analysis
   mutate(across(.cols = c(GearCode, WeatherCode), .fns = na_if, "")) %>%
     filter(lubridate::year(Datetime) < 2024) %>%
   mutate(SampleAltered = ifelse(SampleDate<ymd("2023-07-01"), NA, SampleAltered)) %>%
@@ -220,6 +221,11 @@ March2016 <- filter(fish_catch_clean, EventID == "6861") #first of 3 seines done
 March2016B <- filter(fish_catch_clean, EventID == "6862") #second of 3 seines done - delete record (beach seine analysis)
 March2016C <- filter(fish_catch_clean, EventID == "6863") # third seine done - keep this record
 
+#remove the confirmed duplicate Event ID 
+fish_catch_clean <- fish_catch_clean %>%
+  filter(!(EventID == "4779" | EventID == "6600" | EventID == "6861" |
+             EventID == "6862" | EventID == "7533" | EventID == "7749"))
+
 ```
 
 ### Taxa
@@ -262,7 +268,9 @@ seine_clean <- seine %>%
              TRUE ~ as.character(SubstrateCode))) %>%
   mutate(HabitatType = replace(HabitatType, HabitatType == "Rip", "RIP"),
          HabitatType = replace(HabitatType, HabitatType == "Veg", "VEG")) %>%
-  mutate(across(.cols = c(HabitatType, Tide_Seine), .fns = na_if, "")) 
+  mutate(across(.cols = c(HabitatType, Tide_Seine), .fns = na_if, "")) %>%
+    filter(!(EventID == "4779" | EventID == "6600" | EventID == "6861" |
+             EventID == "6862" | EventID == "7533" | EventID == "7749")) # removes duplicated entries found in beach seine analysis
 unique(seine_clean$HabitatType) #good
 unique(seine_clean$SubstrateCode) # good
 unique(seine_clean$Region)
@@ -771,28 +779,8 @@ fish_catch_QC2 <- fish_catch_QC %>%
   filter(!(OrganismID %in% None))
 
 
-#add in duplicate removal found in JTs beach seine analysis here --- 
-
-# filter out duplicate samples from resample on 6-27-2011 due to gear issues (partial bag twist)
-# Station: BL5, date: 6-27-2011 fish: LP, GSN, MSS, SAPM, SPLT, STB, Tule Perch, Shimo Goby 
-# event ID 4780 - reference data sheet for correct org ID and FL
-
-BL5 <- filter(fish_catch_QC2, EventID == 4780)
-  
-
-
-# remove duplicate on 2-3-2016
-# station BL1 - BGS, 2-3-2016
-
-# remove CHN recorded with count of 3 on 4-27-2017
-# station BL5, CHN, 4-27-2017
-
-# BL6, 10-22-2015 duplicate entry - event ID 6586 and 6600
-
-
-# BL5, 3-29-2016 MSS with count of 2 - delete
-
-# AL1, 7-18-2017 duplicate entry - event ID 7677 and 7749
+#duplicate removal of seine data removed earlier in code for ease of use in 
+#analysis for accuracy - code found in JTs beach seine analysis paper
 
 ```
 
