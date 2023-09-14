@@ -92,11 +92,12 @@ fish_ref_clean <- fish_ref %>%
          GearCode = GearID,
          EventID = SampleID)%>%
   filter(!(EventID == "6600" | EventID == "7749" | EventID == "4779" |
-           EventID == "6861" | EventID == "6862" | EventID == "7533")) %>% #filters 2 duplicated entries found in JTs beach seine analysis
+           EventID == "6861" | EventID == "6862" | EventID == "7533")) %>% #filters duplicated entries found in JTs beach seine analysis
   mutate(across(.cols = c(GearCode, WeatherCode), .fns = na_if, "")) %>%
     filter(lubridate::year(Datetime) < 2024) %>%
   mutate(SampleAltered = ifelse(SampleDate<ymd("2023-07-01"), NA, SampleAltered)) %>%
   select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, WeatherCode, VegetationRank, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered) %>%
+  filter(Datetime<"2023-07-01")%>%
   arrange(Datetime)
 
 unique(fish_ref_clean$VegetationRank)
@@ -225,6 +226,8 @@ March2016C <- filter(fish_catch_clean, EventID == "6863") # third seine done - k
 fish_catch_clean <- fish_catch_clean %>%
   filter(!(EventID == "4779" | EventID == "6600" | EventID == "6861" |
              EventID == "6862" | EventID == "7533" | EventID == "7749"))
+
+#all duplicated instances discovered in beach seine analysis removed
 
 ```
 
