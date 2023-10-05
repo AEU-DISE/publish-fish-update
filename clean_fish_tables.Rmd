@@ -721,6 +721,7 @@ Outliers_wide <- Outliers_wide0%>%
 
 # Rename parameters
 colnames(Outliers_wide)[2:8] <-  sub("Value_*", "", colnames(Outliers_wide)[2:8])
+
 ```
 
 ### m) Combine WQ back with rest of Sample table
@@ -728,6 +729,12 @@ colnames(Outliers_wide)[2:8] <-  sub("Value_*", "", colnames(Outliers_wide)[2:8]
 fish_sample_cleaned <- left_join(Sample_alone, Outliers_wide %>% select(EventID, Flag_WQ, Comment_WQ)) %>%
  select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, Tide, WeatherCode, VegetationRank,SubstrateCode, HabitatType, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered,  FieldComments, Flag_WQ, Comment_WQ) %>%
   filter(GearConditionCode<3)
+
+# "duplicated" data - multiple seines/short set for screw trap etc using same WQ - find and add notation
+
+fish_sample_cleaned0 <- fish_sample_cleaned %>% count(StationCode, SampleDate, WaterTemp, SpecificConductance, Conductivity, 
+          Turbidity, DO, pH, Secchi, MicrocystisRank) %>% 
+          filter(n > 1) %>% select(-n) %>% left_join(fish_sample_cleaned) %>% View()
 
 filterEventID <- unique(fish_sample_cleaned$EventID)
 ```
