@@ -730,7 +730,7 @@ fish_sample_cleaned <- left_join(Sample_alone, Outliers_wide %>% select(EventID,
  select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, Tide, WeatherCode, VegetationRank,SubstrateCode, HabitatType, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered,  FieldComments, Flag_WQ, Comment_WQ) %>%
   filter(GearConditionCode<3)
 
-# "duplicated" data - multiple seines/short set for screw trap etc using same WQ - find and add notation
+# "duplicated" data - multiple seines/short set for screw trap etc using same WQ - find and add notation  - add column for duplicated/not dup
 
 fish_sample_cleaned0 <- fish_sample_cleaned %>% count(StationCode, SampleDate, WaterTemp, SpecificConductance, Conductivity, 
           Turbidity, DO, pH, Secchi, MicrocystisRank) %>% 
