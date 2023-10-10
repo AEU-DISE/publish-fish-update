@@ -9,6 +9,8 @@ editor_options:
 
 Code for joining fish data together
 
+##updated 10-10-23 for 2023 update L.Vance
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -32,7 +34,7 @@ smelt_gen <- read.csv("data_clean/genetics_smelt.csv")
 
 Check files
 ```{r}
-glimpse(stations)
+glimpse(station)
 glimpse(event)
 glimpse(effort)
 glimpse(total_catch)
