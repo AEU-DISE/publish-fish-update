@@ -732,11 +732,16 @@ fish_sample_cleaned <- left_join(Sample_alone, Outliers_wide %>% select(EventID,
 
 # "duplicated" data - multiple seines/short set for screw trap etc using same WQ - find and add notation  - add column for duplicated/not dup
 
-fish_sample_cleaned0 <- fish_sample_cleaned %>% count(StationCode, SampleDate, WaterTemp, SpecificConductance, Conductivity, 
+DuplicatedWQ <- fish_sample_cleaned %>% count(StationCode, SampleDate, WaterTemp, SpecificConductance, Conductivity, 
           Turbidity, DO, pH, Secchi, MicrocystisRank) %>% 
-          filter(n > 1) %>% select(-n) %>% left_join(fish_sample_cleaned) %>% View()
+          filter(n > 1) %>% select(-n) %>% left_join(fish_sample_cleaned) 
 
-filterEventID <- unique(fish_sample_cleaned$EventID)
+fish_sample_cleaned0 <- fish_sample_cleaned %>%
+  mutate(fish_sample_cleaned, Duplicated = (case_when(fish_sample_cleaned$EventID %in% DuplicatedWQ$EventID ~ "duplicated", TRUE ~ "not duplicated")))
+
+fish_sample_cleaned <- fish_sample_cleaned0
+
+filterEventID <- unique(fish_sample_cleaned0$EventID)
 ```
 
 ## 6. Check fish catch table
