@@ -10,6 +10,7 @@ editor_options:
 ---
 
 ## Edited by L. Vance on 14 July, 2023 to include through June 2023 data
+##updated Dec 2024 for update through end of WY2024
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
