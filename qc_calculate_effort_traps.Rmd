@@ -69,15 +69,16 @@ PCS <- filter(status.na, StationCode == "PCS")
 STTD <- filter(status.na, StationCode == "STTD")
 
 #remove rows with comments that indicate the fyke was not set
-# 7641, 8050, 9261, 9505, 9515 - screw trap not set
+# 7641, 8050, 9261, 9505, 9515, 10558 - screw trap not set
+# 10746 was check date
 fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 
                     9406, 9407, 9408, 9409, 9410, 9485, 9505,
-                    9515, 9920, 9950)
+                    9515, 9920, 9950, 10490, 10506, 10558)
 
 
 gear.na <- filter(sampeffort, is.na(GearConditionCode) | GearConditionCode == "")
 
-#search records and remove duplicated/mis-entered samples
+#search records from gear.na and remove duplicated/mis-entered samples
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
 
 f_qaqc1 <- function(fykeNotset_ids, dataEntry_ids) {
@@ -98,6 +99,7 @@ sampeffort3$TrapStatus[sampeffort2$SampleID == 3485] <- "Check"
 sampeffort3$TrapStatus[sampeffort2$SampleID == 5028] <- "Check"
 sampeffort3$TrapStatus[sampeffort2$SampleID == 1917] <- "Check"
 sampeffort3$TrapStatus[sampeffort2$SampleID == 6820] <- "Pull"
+sampeffort3$TrapStatus[sampeffort2$SampleID == 10746] <- "Check"
 
 #some marked as set end up having fish data with them so change to "check" for the purpose of not removing them
 sampeffortcatch <- left_join(sampeffort3, catch) %>%
