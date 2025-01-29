@@ -35,7 +35,7 @@ catch <- bind_rows(Catchread, .id = "column_label")
 stationsOfInterest <- c("PCS", "STTD")
 methods <- c("FKTR", "RSTR")
 DateFirst <- as.Date("1998-01-01")
-DateLast <- as.Date("2023-07-01")
+DateLast <- as.Date("2024-10-01")
   
 
 f_cleancolumnsandmerge <- function(stationsOfInterest, methods, DateFirst, DateLast) {
