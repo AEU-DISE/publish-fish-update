@@ -81,6 +81,9 @@ gear.na <- filter(sampeffort, is.na(GearConditionCode) | GearConditionCode == ""
 #search records from gear.na and remove duplicated/mis-entered samples
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
 
+#entries with condition code not noted
+# 10137, 10161, 10225, 10257, 10348, 10367
+
 f_qaqc1 <- function(fykeNotset_ids, dataEntry_ids) {
 sampeffort %>%
   dplyr::filter(!(SampleID %in% fykeNotSet_ids)) %>%
@@ -249,6 +252,6 @@ sampeffort.hours<- select(qc3, c(StationCode, MethodCode, Date, DateTime, Sample
 
 #write new .csv based on calculated effort
 ```{r}
-write.csv(sampeffort.hours, file = "data_raw/YBFMP_TrapHours_2010_2023.csv", row.names = FALSE)
+write.csv(sampeffort.hours, file = "data_raw/YBFMP_TrapHours_2010_2024.csv", row.names = FALSE)
 ```
 
