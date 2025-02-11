@@ -37,21 +37,21 @@ Sys.setenv(TZ = "America/Los_Angeles")
 ## 1. Save tables into Data folder.
 ## 2. Read in file
 ```{r importdata}
-# Data retrieved 7/14/2023 from Access unless otherwise labeled
+# Data retrieved date noted in file name from Access 
 # Read in catch from folder
 filenames <- list.files("data_raw/Catch", pattern="*.csv", full.names=TRUE)
 Catchread <- lapply(filenames, read.csv)
 # Bind fish catch files together
 fish_catch <- bind_rows(Catchread, .id = "column_label")
-effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2023.csv")
+effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2024.csv")
 fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20230815.csv")
-fish_ref <- read.csv("data_raw/Sample_20230720.csv")
+fish_ref <- read.csv("data_raw/Sample_20241218.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20230714.csv")
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
-smelt_gen <- read.csv("data_raw/SmeltGenetics_20230714.csv")
-salm_gen <- read.csv("data_raw/SalmGenetics_20230905.csv")
-seine <- read.csv("data_raw/SeineEffort_20230720.csv")
-trap <- read.csv("data_raw/TrapEffort_20230720.csv")
+smelt_gen <- read.csv("data_raw/SmeltGenetics_20250117.csv")
+salm_gen <- read.csv("data_raw/SalmGenetics_20250128.csv")
+seine <- read.csv("data_raw/SeineEffort_20241218.csv")
+trap <- read.csv("data_raw/TrapEffort_20241218.csv")
 #cwt <- read.csv("data_raw/CWT_20210722.csv")
 iepfishcodes <- readxl::read_excel("data_raw/IEPFishCodes.xlsx", sheet = 2) %>% as.data.frame() %>%
   select(IEPFishCode, CommonName, Taxa = ScientificName) %>%
