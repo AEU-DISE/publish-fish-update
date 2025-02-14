@@ -46,7 +46,7 @@ fish_catch <- bind_rows(Catchread, .id = "column_label")
 effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2024.csv")
 fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20230815.csv")
 fish_ref <- read.csv("data_raw/Sample_20241218.csv")
-fish_tax <- read.csv("data_raw/OrganismsLookUp_20230714.csv")
+fish_tax <- read.csv("data_raw/OrganismsLookUp_20250211.csv") #updates to shrimp genus and lamprey genus
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
 smelt_gen <- read.csv("data_raw/SmeltGenetics_20250117.csv")
 salm_gen <- read.csv("data_raw/SalmGenetics_20250128.csv")
@@ -94,11 +94,11 @@ fish_ref_clean <- fish_ref %>%
          EventID = SampleID)%>%
   filter(!(EventID == "6600" | EventID == "7749" | EventID == "4779" |
            EventID == "6861" | EventID == "6862" | EventID == "7533")) %>% #filters duplicated entries found in JTs beach seine analysis
-  mutate(across(.cols = c(GearCode, WeatherCode), .fns = na_if, "")) %>%
-    filter(lubridate::year(Datetime) < 2024) %>%
-  mutate(SampleAltered = ifelse(SampleDate<ymd("2023-07-01"), NA, SampleAltered)) %>%
+  mutate(across(.cols = c(GearCode, WeatherCode), .fns = na_if, "")) %>%    #update this for updated dplyr function?
+    filter(lubridate::year(Datetime) < 2025) %>%
+  mutate(SampleAltered = ifelse(SampleDate<ymd("2024-10-01"), NA, SampleAltered)) %>%
   select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, WeatherCode, VegetationRank, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered) %>%
-  filter(Datetime<"2023-07-01")%>%
+  filter(Datetime<"2024-10-01")%>%
   arrange(Datetime)
 
 unique(fish_ref_clean$VegetationRank)
@@ -191,7 +191,7 @@ fish_catch_clean <- left_join(fish_catch_clean0, fish_ref_clean %>% select(Event
   mutate(SampleID = paste0(format(Datetime,"%Y%m%d_%H%M"), "_", StationCode, "_", OrganismCode),
          OrganismID = ifelse(!is.na(ForkLength) | !is.na(TotalLength), paste0(Year, "_", OrganismCode, num), NA)) %>%
   ungroup() %>%   
-  filter(Date<"2023-07-01") %>%
+  filter(Date<"2024-10-01") %>%
   select( -Datetime, -Date,  -StationCode, -num, -Year)
 
 # Make all consistent "minus"
