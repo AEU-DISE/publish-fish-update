@@ -46,7 +46,7 @@ fish_catch <- bind_rows(Catchread, .id = "column_label")
 effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2024.csv")
 fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20230815.csv")
 fish_ref <- read.csv("data_raw/Sample_20241218.csv")
-fish_tax <- read.csv("data_raw/OrganismsLookUp_20250211.csv") #updates to shrimp genus and lamprey genus
+fish_tax <- read.csv("data_raw/OrganismsLookUp_20250214.csv") #updates to shrimp genus and lamprey genus
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
 smelt_gen <- read.csv("data_raw/SmeltGenetics_20250117.csv")
 salm_gen <- read.csv("data_raw/SalmGenetics_20250128.csv")
@@ -100,6 +100,17 @@ fish_ref_clean <- fish_ref %>%
   select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, WeatherCode, VegetationRank, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered) %>%
   filter(Datetime<"2024-10-01")%>%
   arrange(Datetime)
+
+#find and remove or correct station code PCS in seine data as warranted - discovered during scientific review
+pcsseine <- fish_ref_clean %>%
+  filter(StationCode == "PCS" & MethodCode == "BSEIN")
+#dates in 1998 likely labeled correctly for early program
+
+#2007 unclear - data sheet handwritten - remove entry due to lack of clarity
+fish_ref_clean <- fish_ref_clean %>% 
+  filter(!(EventID == 3914))
+#2019 mislabled as pcs when is BL1 - Data sheet confirmed
+fish_ref_clean$StationCode[fish_ref_clean$EventID == 8396] <- "BL1"
 
 unique(fish_ref_clean$VegetationRank)
 unique(fish_ref_clean$GearConditionCode)
