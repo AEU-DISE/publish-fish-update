@@ -1,0 +1,45 @@
+﻿Station Name,Station Number,Time Zone,Databases,Data types,Latitude,Longitude,Station Name (Long),Period of Record (From),Period of Record (To),Historic_or_Current,Comments,Region,Monitoring Type,Alternate_Station_Names
+AL1,A0D83271352,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.5445,-121.586639,Above Lisbon Weir 1,2/2/1998,Present,Current,Moved 30m upstream at beginning of 2018 due to erosion during 2017 flood,YB,Routine,
+AL2,A0D83171352,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.52806,-121.586639,Above Lisbon Weir 2,7/28/2010,Present,Historic,Removed at beginning of 2018 due to analyses showing site was unnecessary,PCS,Removed,
+AL3,A0D83111353,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.5185,-121.588623,Above Lisbon Weir 3,4/20/2005,Present,Current,,PCS,Routine,
+AL4,A0D82971353,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.49439,-121.588583,Above Lisbon Weir 4,7/28/2010,Present,Current,,PCS,Routine,
+Alt_Fyke,A0D82621363,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.436971,-121.604878,Alternate Fyke,12/1/2014,12/10/2014,Historic,Installed Dec. 2014 due to water hyacinth,PCS,Temporary,
+LIB,B9D81450411,PDT/PST,DWQ|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Zooplankton, Phytoplankton",38.2421,-121.6849,Liberty at Approx Centr S End,8/5/2014,Present,Current,"In 2012, B9D81431410 Liberty Island at Base was used",,Special Study-NDFA,
+BL1,A0D82801355,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.46681,-121.590851,Below Lisbon Weir 1,3/3/1998,Present,Current,,PCS,Routine,
+BL2,A0D82591364,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.43189,-121.607053,Below Lisbon Weir 2,3/19/1998,Present,Current,,PCS,Routine,PCS2
+BL3,A0D82341376,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.38939,-121.626278,Below Lisbon Weir 3,10/26/2007,Present,Current,,STB,Routine,STB2
+BL4,A0D82131385,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.35496,-121.6422,Below Lisbon Weir 4,2/2/1998,Present,Current,,STB,Routine,STS
+BL6,A0D81691398,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.282465,-121.663182,Below Lisbon Weir 6,3/24/2015,12/9/2016,Historic,Added in 2015 due to difficult sampling BL5 due to clogging from water hyacinth,STB,Temporary,
+CCS1,A0D82131212,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.598917,-121.590472,Cache Creek Sinks 1,11/9/2007,3/24/2017,Historic,,CCS,Special Study,
+CCS2,A0D82191214,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.601306,-121.599889,Cache Creek Sinks 2,11/9/2007,8/13/2008,Historic,,CCS,Special Study,
+CCS3,A0D82231218,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.622,-121.608083,Cache Creek Sinks 3,11/9/2007,8/13/2008,Historic,,CCS,Special Study,
+CCS4,A0D822101223,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.6405,-121.620306,Cache Creek Sinks 4,11/9/2007,8/13/2008,Historic,,CCS,Special Study,
+CCS7,B9D84101390,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.678278,-121.65,Yolo Bypass Toe Drain near Cache Creek Sinks (Cache Creek Sinks 7),1/6/2005,Present,Current,"Converted to RD22 in 2019, changed back in 2023. Diff lat/long",CCS,Overtopping,RD22
+RYI,B9D81281402,PDT/PST,DWQ|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Zooplankton, Phytoplankton",38.213167,-121.668591,Cache Slough at Ryer Island,8/5/2014,Present,Current,,,Special Study-NDFA,
+DWT,A0033300,PDT/PST,DWQ|PHYTO,"YBFMP Discrete Water Quality, Phytoplankton",38.567057,-121.638239,Davis Wastewater Discharge at Toe Drain,8/5/2014,Present,Current,,,Special Study-NDFA,
+FW1,A0D844101381,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.74979,-121.635232,Fremont Weir 1,1/21/1998,Present,Current,,FW,Overtopping,FW2
+KNA,A0D84151387,PDT/PST,DWQ,YBFMP Discrete Water Quality,38.6916,-121.6458,Knagg's Ranch below KLRS,8/6/2014,8/27/2014,Historic,,,Special Study,
+LIHF,A0D82851353,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.47417,-121.588083,Lisbon Weir - High Flow Site North,1/17/2006,Present,Current,,PCS,Overtopping,
+LIHFS,A0D82841353,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.47355,-121.588364,Lisbon Weir - High Flow Site South,3/25/2011,Present,Current,,PCS,Overtopping,
+BL5,B9D81651399,PDT/PST,DWQ|FISH|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Fish, Zooplankton, Phytoplankton",38.27428,-121.664178,Prospect Slough,10/26/2007,Present,Current,,STB,"Routine, Special Study-NDFA",STB4
+PCS,A0S82801355,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.466958,-121.590934,Putah Creek Sinks,1/20/1998,Present,Current,,PCS,Routine,
+RCS,A0D84761435,PDT/PST,DWQ|ICH|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Ichthyoplankton, Zooplankton, Phytoplankton",38.793457,-121.725447,Ridge Cut Slough at Hwy. 113,8/7/2012,Present,Current,,,Special Study-NDFA,
+RMB,A0C85051515,PDT/PST,DWQ|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Zooplankton, Phytoplankton",38.842001,-121.858371,Rominger Bridge,8/6/2019,Present,Current,,,Special Study-NDFA,
+SB1,A0D83631339,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.605219,-121.564176,Sacramento Bypass 1,2/4/1998,Present,Historic,In 2017 coordinates were shifted slightly east (SB=SB2/SW2).,SB,Overtopping,"SB1, SW1"
+SB2,A0D836313310,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.604167,-121.56625,Sacramento Bypass 2,1/12/2017,Present,Current,In 2017 coordinates were shifted slightly east. ,SB,Overtopping,"SB2, SW2"
+SB3,,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.600778,-121.564766,Sacramento Bypass 3,2/12/2024,Present,Current,"In 2024, coordinates were shifted slightly due to levee repair",SB,Overtopping,SB3
+SDI,B9D80561442,PDT/PST,DWQ|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Zooplankton, Phytoplankton",38.0934,-121.736,Sacramento River at Decker Island,6/28/2017,11/1/2018,Historic,,,Special Study-NDFA,
+RVB,B9D80960412,PDT/PST,DWQ|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Zooplankton, Phytoplankton",38.159737,-121.686355,Sacramento River at Rio Vista Bridge,8/5/2014,Present,Current,,,Special Study-NDFA,
+SHR,A0200000,PDT/PST,DWQ|DRIFT|ICH|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Drift, Ichthyoplankton, Zooplankton, Phytoplankton",38.531881,-121.527912,Sacramento River at Sherwood Harbor,2/3/1998,Present,Current,,,"Routine, Special Study-NDFA",
+SRV,B9D81040386,PDT/PST,DWQ|ZOOP,"YBFMP Discrete Water Quality, Zooplankton",38.172856,-121.6435028,Sacramento River at Vieira's Marina,8/5/2014,9/13/2016,Historic,,,Special Study,
+STTD,A0D82120386,PDT/PST,DWQ|FISH|DRIFT|ICH|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Fish, Drift, Ichthyoplankton, Zooplankton, Phytoplankton",38.353383,-121.643181,Screw Trap in Toe Drain,1/26/1998,Present,Current,,STB,"Routine, Special Study-NDFA",
+I80,A0D83441350,PDT/PST,DWQ|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Zooplankton, Phytoplankton",38.573111,-121.582958,Toe Drain at I80,8/5/2014,Present,Current,,,Special Study-NDFA,
+LIS,B9D82851352,PDT/PST,DWQ|FISH|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Fish, Zooplankton, Phytoplankton",38.474816,-121.588584,Toe Drain at Lisbon Weir,3/3/1998,Present,Current,Fish collected until 12/24/2014 when site eroded. Replaced with LIHF and LIHFS.,PCS,"Routine, Special Study-NDFA",LI
+RD22,A0D84061386,PDT/PST,DWQ|FISH|ZOOP|PHYTO,"YBFMP Discrete Water Quality, Fish, Zooplankton, Phytoplankton",38.676367,-121.643972,Toe Drain at Road 22,12/14/2007,Present,Current,Originally called CCS7 in Fish database - all converted to RD22 in 2019.,CCS,"Overtopping, Special Study-NDFA",CCS7
+WWT,A1030000,PDT/PST,DWQ|PHYTO,"YBFMP Discrete Water Quality, Phytoplankton",38.681621,-121.645775,Woodland Wastewater Discharge at Toe Drain,8/5/2014,Present,Current,,,Special Study-NDFA,
+YB,A0D83391379,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.56538,-121.630989,Yolo Basin,1/16/1998,Present,Current,,YB,Routine,
+YTR1,A025602905,PDT/PST,DWQ|DRIFT|ZOOP,"YBFMP Discrete Water Quality, Zooplankton",38.47157,-121.63335,Yolo Bypass Floodplain Transect 1,1/17/2017,2/24/2017,Historic,Transect study,,Special Study,
+YTR2,A0256000,PDT/PST,DWQ|DRIFT|ZOOP,"YBFMP Discrete Water Quality, Zooplankton",38.47023,-121.62105,Yolo Bypass Floodplain Transect 2,1/17/2017,3/27/2017,Historic,Transect study,,Special Study,
+YTR3,A0256001,PDT/PST,DWQ|DRIFT|ZOOP,"YBFMP Discrete Water Quality, Zooplankton",38.47162,-121.60712,Yolo Bypass Floodplain Transect 3,1/17/2017,3/27/2017,Historic,Transect study,,Special Study,
+YTR4,A0256002,PDT/PST,DWQ|DRIFT|ICH|ZOOP,"YBFMP Discrete Water Quality, Drift, Ichthyoplankton, Zooplankton",38.47258,-121.59431,Yolo Bypass Floodplain Transect 4,1/17/2017,3/27/2017,Historic,Transect study,,Special Study,
+YBI80,A0D83391383,PDT/PST,DWQ|FISH,"YBFMP Discrete Water Quality, Fish",38.56531,-121.638005,Yolo Bypass West Side near I80,3/25/2011,Present,Current,,,Overtopping,

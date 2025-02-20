@@ -44,7 +44,7 @@ Catchread <- lapply(filenames, read.csv)
 # Bind fish catch files together
 fish_catch <- bind_rows(Catchread, .id = "column_label")
 effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2024.csv")
-fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20230815.csv")
+fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20250219.csv")
 fish_ref <- read.csv("data_raw/Sample_20241218.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20250214.csv") #updates to shrimp genus and lamprey genus
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
@@ -104,13 +104,30 @@ fish_ref_clean <- fish_ref %>%
 #find and remove or correct station code PCS in seine data as warranted - discovered during scientific review
 pcsseine <- fish_ref_clean %>%
   filter(StationCode == "PCS" & MethodCode == "BSEIN")
-#dates in 1998 likely labeled correctly for early program
+#dates in 1998/1999/2000 likely labeled correctly for early program
 
 #2007 unclear - data sheet handwritten - remove entry due to lack of clarity
 fish_ref_clean <- fish_ref_clean %>% 
   filter(!(EventID == 3914))
 #2019 mislabled as pcs when is BL1 - Data sheet confirmed
 fish_ref_clean$StationCode[fish_ref_clean$EventID == 8396] <- "BL1"
+
+#find sw2, should be SB2, and fix (from scientific review)
+sw2 <- fish_ref_clean %>% 
+  filter(StationCode == "SW2" & MethodCode == "BSEIN")
+fish_ref_clean$StationCode[fish_ref_clean$EventID == 10119] <- "SB2"
+
+cc <- fish_ref_clean %>% 
+  filter(StationCode == "CC27")
+fish_ref_clean$StationCode[fish_ref_clean$EventID == 10608] <- "CCS7"
+
+#find and correct gear code for 3 dates found during sci review
+gearfix <- fish_ref_clean %>% 
+  filter(GearCode == "FKTR" & MethodCode == "RSTR")
+fish_ref_clean$MethodCode[fish_ref_clean$EventID == 2415] <- "RSTR8"
+fish_ref_clean$MethodCode[fish_ref_clean$EventID == 3469] <- "RSTR8"
+fish_ref_clean$MethodCode[fish_ref_clean$EventID == 3619] <- "RSTR8"
+fish_ref_clean$MethodCode[fish_ref_clean$EventID == 4081] <- "RSTR8"
 
 unique(fish_ref_clean$VegetationRank)
 unique(fish_ref_clean$GearConditionCode)
