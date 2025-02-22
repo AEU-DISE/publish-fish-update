@@ -124,10 +124,10 @@ fish_ref_clean$StationCode[fish_ref_clean$EventID == 10608] <- "CCS7"
 #find and correct gear code for 3 dates found during sci review
 gearfix <- fish_ref_clean %>% 
   filter(GearCode == "FKTR" & MethodCode == "RSTR")
-fish_ref_clean$MethodCode[fish_ref_clean$EventID == 2415] <- "RSTR8"
-fish_ref_clean$MethodCode[fish_ref_clean$EventID == 3469] <- "RSTR8"
-fish_ref_clean$MethodCode[fish_ref_clean$EventID == 3619] <- "RSTR8"
-fish_ref_clean$MethodCode[fish_ref_clean$EventID == 4081] <- "RSTR8"
+fish_ref_clean$GearCode[fish_ref_clean$EventID == 2415] <- "RSTR8"
+fish_ref_clean$GearCode[fish_ref_clean$EventID == 3469] <- "RSTR8"
+fish_ref_clean$GearCode[fish_ref_clean$EventID == 3619] <- "RSTR8"
+fish_ref_clean$GearCode[fish_ref_clean$EventID == 4081] <- "RSTR8"
 
 unique(fish_ref_clean$VegetationRank)
 unique(fish_ref_clean$GearConditionCode)
@@ -277,7 +277,8 @@ fish_tax_clean <- fish_tax %>%
   mutate(Taxa = ifelse(is.na(Genus), paste(Family, Species), paste(Genus, Species)),
          Taxa = replace(Taxa, Taxa == "Menidia beryllina", "Menidia audens"),
          Taxa = replace(Taxa, Taxa == "Hysterocarpus traski", "Hysterocarpus traskii"),
-         Taxa = replace(Taxa, Taxa == "NoCatch", NA)) 
+         Taxa = replace(Taxa, Taxa == "NoCatch", NA)) %>% 
+  mutate(Species = replace(Species, OrganismCode == "MSS", "audens"))
 
 # fish_tax_ed_clean <- fish_tax_ed %>%
   # dplyr::rename(OrganismCode = OrganismCode_FISH)
