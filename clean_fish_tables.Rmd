@@ -183,7 +183,7 @@ fish_catch_clean0 <- fish_catch %>%
         ifelse(RaceByLength == "LF", "LateFall",
         ifelse(RaceByLength == "W", "Winter",                     
                ifelse((RaceByLength == "U" | RaceByLength == "" | RaceByLength == "n/p"), NA, as.character(RaceByLength))))))) %>%
-  mutate(RaceByLength = ifelse(FishTagID %in% c("2019Ad_plus-F_285", "2019Ad_plus-F_281"), "Fall", 
+  mutate(RaceByLength = ifelse(FishTagID %in% c("2019Ad_plus-F_285", "2019Ad_plus-F_281" ), "Fall", 
 ifelse(FishTagID == "2019Ad_plus-F_278", "LateFall", as.character(RaceByLength)))) %>%
   mutate(Sex = ifelse(Sex == "Female", "F",
                ifelse(Sex == "Male", "M",
@@ -237,6 +237,14 @@ unique(fish_catch_clean$RaceByLength)
 #FishTagIDs <- filter(fish_catch_clean, FishTagID != "")
 noCount <- filter(fish_catch_clean, Count == 0 | is.na(Count) | Count == "") 
 needRace <- filter(fish_catch_clean, is.na(RaceByLength) & OrganismCode == "CHN" & !is.na(ForkLength))
+
+#correct gen tag numbers that were mistyped
+fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10348 & fish_catch_clean$ForkLength == 830] <- "2023_ACHN_001"
+fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10350 & fish_catch_clean$ForkLength == 762] <- "2023_ACHN_002"
+fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10354 & fish_catch_clean$ForkLength == 798] <- "2023_ACHN_003"
+fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10355 & fish_catch_clean$ForkLength == 761] <- "2023_ACHN_005"
+fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10355 & fish_catch_clean$ForkLength == 889] <- "2023_ACHN_004"
+
 
 # find duplicated data discovered during beach seine data analysis for paper in progress
 BL12016 <- filter(fish_catch_clean, EventID == "6760")
