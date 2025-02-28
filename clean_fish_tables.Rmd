@@ -515,7 +515,7 @@ sampleChange <- c(5096, 5093, 4844, 5493, 5510, 5859, 6038, 6077, 6104, 6436, 65
 10134, 10135, 10136, 9517)
 # change in amount of time set/distance of seine: 5096, 5093, 4844, 5493, 5510, 5859, 6038, 6077, 6104, 6436, 6517, 6590, #6589, 6617, 6654, 6677, 6988, 6989, 7133, 7159, 7167, 7535, 7724, 8209, 8227, 8243, 8290, 8283, 8751, 8058, 9497,
 # 9534, 9536, 9542, 9648, 9665, 9671, 9676, 9677, 9708, 9759, 9760, 9778, 9786, 9802, 9803, 9810, 9827, 9828, 9836, 9837,
-# 9850, 9851, 9912, 9913, 9924, 9925, 9926, 9943, 9944, 9949, 9650, 9981, 9987, 10003, 10007, 10012, 10021, 10034, 10067, 10069, 10083, 10210, 10254, 10290, 10299
+# 9850, 9851, 9912, 9913, 9924, 9925, 9926, 9943, 9944, 9949, 9650, 9981, 9987, 10003, 10007, 10012, 10021, 10034, 10067, 10069, 10083, 10210, 10254, 10290, 10291, 10299
 
 # change in location of set: 8673, 2307, 4806, 6106,6116, 7116, 7141, 7258, 7591, 7682, 7695, 7883, 8055, 8151, 8474, 8494, 8622, 8673, 9014, 3438, 7409, 8160, 8440, 8448, 9305, 9384, 9432, 9441, 9663
 
@@ -770,7 +770,7 @@ colnames(Outliers_wide)[2:8] <-  sub("Value_*", "", colnames(Outliers_wide)[2:8]
 fish_sample_cleaned <- left_join(Sample_alone, Outliers_wide %>% select(EventID, Flag_WQ, Comment_WQ)) %>%
  select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, Tide, WeatherCode, VegetationRank,SubstrateCode, HabitatType, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered,  FieldComments, Flag_WQ, Comment_WQ) %>%
   filter(GearConditionCode<3)
-
+#make sure to leave cond code 3 in, leave cond code 4 out
 # "duplicated" data - multiple seines/short set for screw trap etc using same WQ - find and add notation  - add column for duplicated/not dup
 
 DuplicatedWQ <- fish_sample_cleaned %>% count(StationCode, SampleDate, WaterTemp, SpecificConductance, Conductivity, 
