@@ -373,7 +373,7 @@ smelt_gen_clean <- smelt_gen %>%
     GeneticID == "missing data" ~ "UNK",
     GeneticID == "" ~ "UNK",
     TRUE ~ as.character(GeneticID))) %>%
-  select(SmeltGeneticRowID, FishGenID, qDSM, qWAG, qLFS, GeneticID, Comments_Smelt) 
+  select(SmeltGeneticRowID, FishGenID, qDSM, qWAG, qLFS, GeneticID, VShape, Comments_Smelt) 
 
 unique(smelt_gen_clean$GeneticID)
 unique(smelt_gen_clean$VShape)
@@ -416,10 +416,11 @@ salm_gen_clean$FishGenID <- gsub("min", "minus", salm_gen_clean$FishGenID)
 ### b) Remove known incorrect IDs, replace with corrected dates from effort file
 ```{r}
 #remove rows with comments that indicate the fyke was not set (copied over from effort file)
-# 7641, 8050, 9261, 9505, 9515 - screw trap not set (copied over from effort file)
+# 7641, 8050, 9261, 9505, 9515, 10558 - screw trap not set (copied over from effort file)
+# 10746 was check date (copied over from effort file)
 fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261, 
                     9406, 9407, 9408, 9409, 9410, 9485, 9505,
-                    9515, 9920, 9950)
+                    9515, 9920, 9950, 10490, 10506, 10558)
 #remove duplicated/mis-entered samples (copied over from effort file)
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
 
@@ -482,6 +483,7 @@ SampleComments <- Sample_effort_seine %>%
 check2021 <- filter(SampleComments, year(SampleDate) == 2021 & FieldComments!="")
 check2022 <- filter(SampleComments, year(SampleDate) == 2022 & FieldComments!="")
 check2023 <- filter(SampleComments, year(SampleDate) == 2023 & FieldComments!="")
+check2024 <- filter(SampleComments, year(SampleDate) == 2024 & FieldComments!="")
 ```
 
 ### e) Make changes made to condition code
@@ -744,6 +746,7 @@ ggplot() +
 OutliersToCheck <- filter(Outliers0, Outlier >=1)
 
 check2223 <- filter(OutliersToCheck, (Year == "2022" | Year == "2023"))
+check24 <- filter(OutliersToCheck, (Year =="2024"))
 ```
 
 ### k) Convert outliers to wide format
