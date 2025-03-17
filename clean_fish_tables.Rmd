@@ -48,7 +48,7 @@ fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20250219.csv
 fish_ref <- read.csv("data_raw/Sample_20241218.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20250214.csv") #updates to shrimp genus and lamprey genus
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
-smelt_gen <- read.csv("data_raw/SmeltGenetics_20250117.csv")
+smelt_gen <- read.csv("data_raw/SmeltGenetics_20250317.csv")
 salm_gen <- read.csv("data_raw/SalmGenetics_20250128.csv")
 seine <- read.csv("data_raw/SeineEffort_20241218.csv")
 trap <- read.csv("data_raw/TrapEffort_20241218.csv")
