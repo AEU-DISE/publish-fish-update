@@ -832,7 +832,8 @@ FLNA = "2013_MSS1969"
 #20130604_1055_YB_MSS
 
 # These are mistakes
-None = c("2007_NONE1", "2007_NONE6", "2007_NONE7", "2010_NONE3")
+# also removing erroneous shrimp data (found by Nicole)
+None = c("2007_NONE1", "2007_NONE6", "2007_NONE7", "2010_NONE3", "2021_SHRK39", "2021_SHRK40", "2021_SHR127", "2017_SHR148", "2021_SHR129", "2007_SHR31", "2009_SHR2")
 
 
 # Make changes -------------------------------------------------
@@ -926,8 +927,14 @@ smallFish <- fish_catch_QC3 %>%
 
 FL_NA <- "2020_CHN10"
 
+# incorrect mss length BSEIN 2023 (9mm -> should be 44mm per data sheet)
+mss <- fish_catch_QC3 %>% 
+  filteR(EventID == 10320 & OrganismCode == "MSS")
+FL_MSS <- "2023_MSS1431"
+
 individuals <-  individuals0 %>%
-  mutate(ForkLength = replace(ForkLength, OrganismID %in% FL_NA, NA))
+  mutate(ForkLength = replace(ForkLength, OrganismID %in% FL_NA, NA)) %>% 
+  mutate(ForkLength = replace(ForkLength, OrganismID %in% FL_MSS, 44))
 ```
 
 ### f) Just an overall look at catch and length - leaving these as they are since the extra high lengths, counts seem plausible
