@@ -778,7 +778,7 @@ colnames(Outliers_wide)[2:8] <-  sub("Value_*", "", colnames(Outliers_wide)[2:8]
 ```{r}
 fish_sample_cleaned <- left_join(Sample_alone, Outliers_wide %>% select(EventID, Flag_WQ, Comment_WQ)) %>%
  select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, Tide, WeatherCode, VegetationRank,SubstrateCode, HabitatType, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered,  FieldComments, Flag_WQ, Comment_WQ) %>%
-  filter(GearConditionCode<3)
+  filter(GearConditionCode<4)
 #make sure to leave cond code 3 in, leave cond code 4 out
 # "duplicated" data - multiple seines/short set for screw trap etc using same WQ - find and add notation  - add column for duplicated/not dup
 
@@ -929,7 +929,7 @@ FL_NA <- "2020_CHN10"
 
 # incorrect mss length BSEIN 2023 (9mm -> should be 44mm per data sheet)
 mss <- fish_catch_QC3 %>% 
-  filteR(EventID == 10320 & OrganismCode == "MSS")
+  filter(EventID == 10320 & OrganismCode == "MSS")
 FL_MSS <- "2023_MSS1431"
 
 individuals <-  individuals0 %>%
