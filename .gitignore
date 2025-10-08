@@ -42,3 +42,5 @@ vignettes/*.pdf
 # Big files
 data_clean/integrated_wq_totalcatch.csv
 data_clean/total_catch.csv
+data_clean/2024 update archive/integrated_wq_totalcatch.csv
+data_clean/2024 update archive/total_catch.csv
