@@ -1,0 +1,39 @@
+﻿Sample ID,Run ID,final_call,Fall Prob.,Late_fall Prob.,Spring Prob.,Winter Prob.,Final Call probability,tributary
+2025Ad_plus-F_207,Late,Fall,1,0,0,0,1,NA
+2025Ad_min-W_001,Early,Winter,0,0,0,1,1,NA
+2025Ad_plus-F_178,Late,Fall,1,0,0,0,1,NA
+2025Ad_plus-F_191,Late,Fall / Late Fall,1,0,0,0,1,NA
+2025Ad_plus-F_209,Late,Fall,1,0,0,0,1,NA
+2025Ad_plus-F_197,Late,Fall / Late Fall,1,0,0,0,1,NA
+2025Ad_plus-F_206,Late,Fall,1,0,0,0,1,NA
+2025Ad_plus-F_194,Late,Fall,1,0,0,0,1,NA
+2025Ad_plus-F_208,Late,Fall,1,0,0,0,1,NA
+2025Ad_plus-F_171,Late,Fall,1,0,0,0,1,NA
+2025Ad_plus-F_153,Uncertain,Fall / Late Fall,1,0,0,0,0.999,NA
+2026Ad_plus-S_021,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_158,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_010,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2026Ad_plus-S_016,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2026Ad_plus-S_013,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_005,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_008,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_172,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_003,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_007,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_009,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_007,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_076,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_205,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-S_004,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_002,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_068,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_121,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_160,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_014,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_032,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_115,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_004,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_049,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_057,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_028,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
+2025Ad_plus-F_035,Uncertain,Missing Data,NA,NA,NA,NA,NA,NA
