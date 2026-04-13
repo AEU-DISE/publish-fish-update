@@ -81,7 +81,48 @@ write.csv(gemgenetics, "data_raw/gemlabgenetics.csv")
 # print(resample)
 
 
+############# determine how to join tables for publishing
+str(salm_gen)
+str(salm_gen2)
 
-gemgen2 <-gemgen1 %>% 
-  select(-c(Fall, Late_fall, Spring, Winter, tributary, Status)) %>% 
-  case_when(Prob1 == "Data" ~ "", TRUE ~ as.numeric(Prob1))
+salm3 <- salm_gen2 %>% 
+  select(-c(X, Fall, Late_fall, Spring, Winter)) %>% 
+  rename(FishGenID = FishTagID,
+         GeneticID = BestEstimate,
+         Comments_Salmon = Comments, 
+         RunID = Run.ID,
+         Probability1 = Prob1)
+
+
+salm_gen_clean <- salm_gen %>%
+  dplyr::rename(FishGenID = FishTagID,
+                GeneticID = BestEstimate,
+                GeneticID2 = X2ndBestEstimate,
+                Comments_Salmon = Comments)  %>%
+  mutate(SalmGeneticRowID = 1:nrow(.),
+         GeneticID = case_when(
+           GeneticID %in% c("f", "F")~ "Fall",
+           GeneticID == "S"~ "Spring",
+           GeneticID == "LF"~ "LateFall",
+           GeneticID == "W"~ "Winter",
+           GeneticID %in% c("U", "")~ "n/p", 
+           TRUE ~ as.character(GeneticID))) %>%
+  mutate(GeneticID2 = case_when(
+    GeneticID2 %in% c("f", "F")~ "Fall",
+    GeneticID2 == "S"~ "Spring",
+    GeneticID2 == "LF"~ "LateFall",
+    GeneticID2 == "W"~ "Winter",
+    GeneticID2 %in% c("U", "")~ "n/p", 
+    TRUE ~ as.character(GeneticID2))) %>%
+  mutate(Comments_SalmonDataUsage = "Please contact Mariah Meek (mhmeek@msu.edu) if you wish to share or publish any salmonid genetics data") %>%
+  select(SalmGeneticRowID, FishGenID, GeneticID, Probability1 = Prob1, GeneticID2, Probability2 = Prob2, Comments_Salmon, Comments_SalmonDataUsage)
+unique(salm_gen_clean$GeneticID)
+
+salm_gen_clean$FishGenID <- gsub("minus", "min", salm_gen_clean$FishGenID)
+salm_gen_clean$FishGenID <- gsub("min", "minus", salm_gen_clean$FishGenID)
+
+unique(salm3$GeneticID)
+
+
+salmcombined <- bind_rows(salm_gen_clean, salm3)
+#doublecheck salmon data comments and fishgenID for GEM run genetics vs MSU run genetics

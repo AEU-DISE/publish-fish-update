@@ -46,13 +46,14 @@ Catchread <- lapply(filenames, read.csv)
 fish_catch <- bind_rows(Catchread, .id = "column_label")
 effort <- read.csv("data_raw/YBFMP_TrapHours_2010_2025.csv")
 fish_stations <- read.csv("data_raw/YBFMP_Stations_Coordinates_Info_20250219.csv")
-fish_ref <- read.csv("data_raw/Sample_20251008.csv")
+fish_ref <- read.csv("data_raw/Sample_20260310.csv")
 fish_tax <- read.csv("data_raw/OrganismsLookUp_20250214.csv") #updates to shrimp genus and lamprey genus
 fish_tax_ed <- read.csv("data_raw/FishTaxonomyKISTERS.csv") #Edited for KISTERS, only has species present
 smelt_gen <- read.csv("data_raw/SmeltGenetics_20250317.csv")
-salm_gen <- read.csv("data_raw/SalmGenetics_20250128.csv")
-seine <- read.csv("data_raw/SeineEffort_20251008.csv")
-trap <- read.csv("data_raw/TrapEffort_20251008.csv")
+salm_gen <- read.csv("data_raw/SalmGenetics_20260324.csv")
+salm_gen2 <- read.csv("data_raw/gemlabgenetics.csv")
+seine <- read.csv("data_raw/SeineEffort_20260310.csv")
+trap <- read.csv("data_raw/TrapEffort_20260310.csv")
 #cwt <- read.csv("data_raw/CWT_20210722.csv")
 iepfishcodes <- readxl::read_excel("data_raw/IEPFishCodes.xlsx", sheet = 2) %>% as.data.frame() %>%
   select(IEPFishCode, CommonName, Taxa = ScientificName) %>%
@@ -129,6 +130,11 @@ fish_ref_clean$GearCode[fish_ref_clean$EventID == 2415] <- "RSTR8"
 fish_ref_clean$GearCode[fish_ref_clean$EventID == 3469] <- "RSTR8"
 fish_ref_clean$GearCode[fish_ref_clean$EventID == 3619] <- "RSTR8"
 fish_ref_clean$GearCode[fish_ref_clean$EventID == 4081] <- "RSTR8"
+#additional gear fixes
+fish_ref_clean$GearCode[fish_ref_clean$EventID == 10648] <- "RSTR8"
+fish_ref_clean$MethodCode[fish_ref_clean$EventID == 10648] <- "RSTR"
+fish_ref_clean$GearCode[fish_ref_clean$EventID == 10643] <- "FKTR"
+fish_ref_clean$MethodCode[fish_ref_clean$EventID == 10643] <- "FKTR"
 
 unique(fish_ref_clean$VegetationRank)
 unique(fish_ref_clean$GearConditionCode)
@@ -245,7 +251,8 @@ fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10350 & fish_catch_clean$
 fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10354 & fish_catch_clean$ForkLength == 798] <- "2023_ACHN_003"
 fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10355 & fish_catch_clean$ForkLength == 761] <- "2023_ACHN_005"
 fish_catch_clean$FishGenID[fish_catch_clean$EventID == 10355 & fish_catch_clean$ForkLength == 889] <- "2023_ACHN_004"
-
+fish_catch_clean$FishGenID[fish_catch_clean$EventID == 9869 & fish_catch_clean$ForkLength == 775] <- "2022_ACHN_006"
+fish_catch_clean$FishIDComments[fish_catch_clean$EventID == 9869 & fish_catch_clean$ForkLength == 775] <- "Floy Tag #470"
 
 # find duplicated data discovered during beach seine data analysis for paper in progress
 BL12016 <- filter(fish_catch_clean, EventID == "6760")
@@ -408,6 +415,18 @@ unique(salm_gen_clean$GeneticID)
 
 salm_gen_clean$FishGenID <- gsub("minus", "min", salm_gen_clean$FishGenID)
 salm_gen_clean$FishGenID <- gsub("min", "minus", salm_gen_clean$FishGenID)
+
+## clean up and add GEM lab genetics to file
+salm3 <- salm_gen2 %>% 
+  select(-c(X, Fall, Late_fall, Spring, Winter)) %>% 
+  rename(FishGenID = FishTagID,
+         GeneticID = BestEstimate,
+         Comments_Salmon = Comments, 
+         RunID = Run.ID,
+         Probability1 = Prob1)
+
+salm_gen_clean <- bind_rows(salm_gen_clean, salm3)
+
 ```
 
 # C. Content QA/QC
@@ -427,7 +446,7 @@ fykeNotSet_ids <- c(3192, 7118, 7641, 8050, 8051, 8361, 9261,
 dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971)
 
 #entries with condition code not noted
-# 10137, 10161, 10225, 10257, 10348, 10367
+# 10137, 10161, 10225, 10257, 10348, 10367, 11129
 
 Sample_effort <- (fish_ref_clean %>% select(-SampleDate)) %>%
   filter(!(EventID %in% c(fykeNotSet_ids, dataEntry_ids))) %>%
@@ -489,6 +508,7 @@ check2021 <- filter(SampleComments, year(SampleDate) == 2021 & FieldComments!=""
 check2022 <- filter(SampleComments, year(SampleDate) == 2022 & FieldComments!="")
 check2023 <- filter(SampleComments, year(SampleDate) == 2023 & FieldComments!="")
 check2024 <- filter(SampleComments, year(SampleDate) == 2024 & FieldComments!="")
+check2025 <- filter(SampleComments, year(SampleDate) == 2025 & FieldComments!="")
 ```
 
 ### e) Make changes made to condition code
@@ -640,10 +660,10 @@ plotly::ggplotly(AL_boxplots)
 
 # Outliers
 fish_WQ_outliers <- fish_WQ %>%
-  mutate(Flag_WQ = ifelse((pH< 6.1 | pH > 10 | Turbidity > 400 | Secchi == 0.8), 2, ""),
+  mutate(Flag_WQ = ifelse((pH< 6.1 | pH > 10 | Turbidity > 400 | Secchi > 0.8), 2, ""),
          Comment_WQ = case_when(pH< 6.1 | pH > 10 ~ "pH",
                                 Turbidity > 400 ~ "Turbidity",
-                                Secchi == 0.8 ~ "Secchi",
+                                Secchi > 0.8 ~ "Secchi",
                                 TRUE~as.character("")))
 
 
@@ -708,6 +728,8 @@ outlier_long <- pivot_longer(fish_WQ_outliers3, cols = c(WaterTemp:Secchi),names
 ### h) Calculate "Outlier" to sum up Tukey, MAD, Visual outlier numbers
 ### i) Classify into 1 = acceptable, 2 = suspicious, 3 = highly suspicious
 ```{r}
+library(remotes)
+remotes::install_github("ODWG/ODWGtools")
 library(ODWGtools)
 Outliers0 <- outlier_long %>%
   #filter(!(Index %in% toremove)) %>%
@@ -736,20 +758,23 @@ ggplot() +
   geom_point(aes(Datetime, Value, colour = factor(Outlier), text = Index), size = 1) + 
   facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw() + labs(title = "BL")
 BL_outliers
+ggplotly(BL_outliers)
 
 # AL Sites
-Outliers0 %>%
+AL_outliers <- Outliers0 %>%
 filter(Region == "AL") %>%
 ggplot() + 
   geom_point(aes(Datetime, Value, colour = factor(Outlier)), size = 1) + 
   facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw()  + labs(title = "AL")
+ggplotly(AL_outliers)
 
 # Other
-Outliers0 %>%
+Other_outliers <- Outliers0 %>%
 filter(Region == "Other") %>%
 ggplot() + 
   geom_point(aes(Datetime, Value, colour = factor(Outlier)), size = 1) + 
   facet_wrap(~Parameter, scales = "free") + scale_colour_viridis(discrete = TRUE) + theme_bw() + labs(title = "Other")
+ggplotly(Other_outliers)
 ```
 
 ```{r}
@@ -757,6 +782,7 @@ OutliersToCheck <- filter(Outliers0, Outlier >=1)
 
 check2223 <- filter(OutliersToCheck, (Year == "2022" | Year == "2023"))
 check24 <- filter(OutliersToCheck, (Year =="2024"))
+check25 <- filter(OutliersToCheck, (Year == "2025"))
 ```
 
 ### k) Convert outliers to wide format
@@ -822,11 +848,11 @@ check_counts <- fish_catch_QC %>%
 # QC notes -----------------------------------------------------------
 
 # These ones are accurate, just took into account multiple fish with same length
-PlusCountFalse = c("2010_LP376", "2011_LP526")
+PlusCountFalse = c("2010_LP376", "2011_LP526", "2025_SPLT161", "2024_SHRK222", "2024_SHRK223", "2024_SHRK224")
 #20100930_1100_AL3_LP, 20110819_1102_AL4_LP
 
 # These had the wrong count
-Count1 = "2011_LP376"
+Count1 = c("2011_LP376", "2025_SPLT161", "2024_SHRK222", "2024_SHRK223", "2024_SHRK224")
 # These are samples that are helping account for others that combined plus count and a measured fish into one row
 Count2 = "2013_MSS1943"
 FLNA = "2013_MSS1969"
@@ -845,6 +871,7 @@ fish_catch_QC2 <- fish_catch_QC %>%
          ForkLength = replace(ForkLength, OrganismID %in% FLNA, NA)) %>%
   filter(!(OrganismID %in% None))
 
+fish_catch_QC2$Dead[fish_catch_QC2$OrganismID == "2024_SHR131"] <- "Yes"
 
 #duplicate removal of seine data removed earlier in code for ease of use in 
 #analysis for accuracy - code found in JTs beach seine analysis paper

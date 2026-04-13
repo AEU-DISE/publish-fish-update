@@ -1,42 +1,37 @@
----
-title: "Add Fyke Effort"
-author: "Catarina Pien"
-date: "8/13/2021"
-output: ''
-editor_options: 
-  chunk_output_type: console
----
+#check what error occurred for eventID 11151
 
-## Modified from N. Kwan 8 July, 2020 from FASTR 
-## Edited by C. Pien on 13 August, 2021
-## Edited by C. Pien on 4 November, 2021
-## last filtered to starting 2010-2020, though some QA/QC covers back to 2000. 
-## Edited by C. Pien on 6 December, 2021 to include some of Nicole's finds
-## Edited by C. Pien on 11 May, 2021 to include 2021 data
-## Edited by L. Vance on 14 July, 2023 to include through June 2023 data
-## edit L.Vance Jan 2025 for update through WY24
-## edit L. Vance 10/2025 for update through WY25
+checkdates <- fish_catch_QC %>% 
+  filter(EventID == 11151 )
 
-# Read in data and clean
-```{r setup, include=FALSE}
+fish_date <- fish_sample_cleaned %>% 
+  filter(SampleDate == "2025-04-16")
+
+check <- fish_catch_QC %>% 
+  filter(EventID == 10637)
+
+salmon <- fish_catch_clean %>% 
+  filter(EventID == 9869)
+
+salmon <- fish_catch_clean %>% 
+  filter(EventID == 10953)
+
+
+# figure out adding in rev counter 
 library(tidyverse)
+library(dplyr) 
+library(tidyr) 
+library(ggplot2)
+library(ggridges)
 library(lubridate)
+library(ggpubr)
 library(tidylog)
 
-#bring in trap effort from YBFMP Access DB query of "TrapEffort" and "Sample" tables
 sample <- read.csv("data_raw/Sample_20260310.csv")
 effort <- read.csv("data_raw/TrapEffort_20260310.csv")
 filenames <- list.files("data_raw/Catch", pattern="*.csv", full.names=TRUE)
 Catchread <- lapply(filenames, read.csv)
 catch <- bind_rows(Catchread, .id = "column_label")
 
-# ------------------------------
-
-# Clean up columns from previous and join together
-stationsOfInterest <- c("PCS", "STTD")
-methods <- c("FKTR", "RSTR")
-DateFirst <- as.Date("1998-01-01")
-DateLast <- as.Date("2025-10-01")
 
 #fix known gear issues before proceeding (scientific review etc)  
 sample$MethodCode[sample$SampleID == 10648] <- "RSTR"
@@ -63,15 +58,9 @@ sampeffort <- f_cleancolumnsandmerge(stationsOfInterest, methods, DateFirst, Dat
 #renaming and cleaning up duplicate samplerowid column
 sampeffort <- sampeffort %>% 
   select(-c(SampleRowID.y)) %>% 
-  rename(SampleRowID = SampleRowID.x)
+  rename(SampleRowID = SampleRowID.x,
+         RevCounter = Rev.Counter)
 
-```
-
-# QA/QC
-
-Remove NAs
-```{r}
-#search for status and time NA's/blanks
 summary(sampeffort)
 status.na <- filter(sampeffort, is.na(TrapStatus) | TrapStatus == "")
 time.na <- filter(sampeffort, is.na(SampleTime) | SampleTime == "")
@@ -98,16 +87,13 @@ dataEntry_ids <- c(1698, 1858, 1862, 2009, 2477, 2826, 3485, 6971, 11123)
 # 10137, 10161, 10225, 10257, 10348, 10367. 11129 (WQ wasn't taken at set, entered into db without WQ just date/time)
 
 f_qaqc1 <- function(fykeNotset_ids, dataEntry_ids) {
-sampeffort %>%
-  dplyr::filter(!(SampleID %in% fykeNotSet_ids)) %>%
-  dplyr::filter(!(SampleID %in% dataEntry_ids))
+  sampeffort %>%
+    dplyr::filter(!(SampleID %in% fykeNotSet_ids)) %>%
+    dplyr::filter(!(SampleID %in% dataEntry_ids))
 }
 
 sampeffort2 <- f_qaqc1(fykeNotSet_ids, dataEntry_ids)
-```
 
-Fill in blank/NA entries and fix incorrect entries
-```{r}
 sampeffort3 <- sampeffort2
 #Some samples didn't have status entered - confirm with scanned data sheet
 sampeffort3$TrapStatus[sampeffort2$SampleID == 7447] <- "Check"
@@ -116,6 +102,10 @@ sampeffort3$TrapStatus[sampeffort2$SampleID == 5028] <- "Check"
 sampeffort3$TrapStatus[sampeffort2$SampleID == 1917] <- "Check"
 sampeffort3$TrapStatus[sampeffort2$SampleID == 6820] <- "Pull"
 sampeffort3$TrapStatus[sampeffort2$SampleID == 10746] <- "Check"
+
+
+sampeffortcatch <- left_join(sampeffort3, catch)
+
 
 #some marked as set end up having fish data with them so change to "check" for the purpose of not removing them
 sampeffortcatch <- left_join(sampeffort3, catch) %>%
@@ -164,25 +154,23 @@ sampeffort3$SampleDate[sampeffort2$SampleID == 7558] <- "5/24/2017"
 sampeffort3$Date[sampeffort2$SampleID == 7620] <- as.Date("2017-06-14")
 sampeffort3$SampleDate[sampeffort2$SampleID == 7620] <- "6/14/2017"
 
+# There are two entries for 6/27/2017. Chose this one to be the next day because of the sample crew but not 100% sure.
+# sampeffort3$Date[sampeffort2$SampleID == 7657] <- as.Date("2017-06-28")
+# sampeffort3$SampleDate[sampeffort2$SampleID == 7657] <- "6/28/2017"
+
 # 2/19 was president's day and fyke was set 2/20 (Tuesday), so guessing screw trap was also set 2/20 and not 2/19. 
 sampeffort3$Date[sampeffort2$SampleID == 7966] <- as.Date("2018-02-20")
 sampeffort3$SampleDate[sampeffort2$SampleID == 7966] <- "2/20/2018"
 
-```
 
-# Calculate time difference (effort hours) and total revolutions
-```{r}
 #create a column with date & time together
 sampeffort3$DateTime = mdy_hms(paste(sampeffort3$SampleDate, sampeffort3$SampleTime))
 str(sampeffort3)
 
-sampeffort3$SampleDate <- mdy(sampeffort3$SampleDate)
+# sampeffort4 <- sampeffort3 %>% 
+#   mutate(SampleDate = as.Date("SampleDate",format ="%Y/%m/%d"))
 
-#rev counter written wrong, confirmed with data sheets
-sampeffort3$Rev.Counter[sampeffort3$SampleID == 6435] <- 69832
-sampeffort3$Rev.Counter[sampeffort3$SampleID == 6925] <- 103007 #confirmed with datasheet
-sampeffort3$Rev.Counter[sampeffort3$SampleID == 10704] <- 104604 #confirmed with datasheet
-sampeffort3$Rev.Counter[sampeffort3$SampleID == 8668] <- 321484 # confirmed with datasheet
+sampeffort3$SampleDate <- mdy(sampeffort3$SampleDate)
 
 sampeffort4 <- sampeffort3 %>% 
   rename(RevCounter = Rev.Counter) %>% 
@@ -193,17 +181,67 @@ sampeffort4 <- sampeffort3 %>%
   mutate(PrevRevs=as.numeric(dplyr::lag(RevCounter, n=1)))%>%
   mutate(TotalOldRevs=as.numeric(RevCounter)-PrevRevs)
 
+# sampeffort5 <- sampeffort4 %>% 
+#   filter(TrapStatus == "Set" & MethodCode == "RSTR") %>% 
+#   mutate(TotalRevs = case_when(TotalOldRevs != 0 ~ 0,
+#                                TRUE ~ TotalOldRevs))
+
 sampeffort5 <- sampeffort4 %>% 
-  mutate(TotalRevs = case_when(TrapStatus =="Set"&MethodCode =="RSTR" & TotalOldRevs !=0 ~ 0,TRUE ~ TotalOldRevs))
+  mutate(TotalRevs = case_when(TrapStatus =="Set"&MethodCode =="RSTR" & TotalOldRevs !=0 ~ 0,
+                               TRUE ~ TotalOldRevs))
+
+
+sampeffort5 <- sampeffort5 %>% 
+  relocate(RevCounter, .after = Week) %>% 
+  relocate(Comments, .before = DateTime)
+
+check <- sampeffort5 %>% 
+  filter(TotalRevs != 0)
+
+negatives <- subset(sampeffort5, TotalRevs <0) %>% 
+  arrange(MethodCode)
+
+highvalues <- subset(sampeffort5, TotalRevs > 100000) %>% 
+  arrange(MethodCode)
+
+march <- sample %>% 
+  filter(SampleDate == "3/9/2017")
+
+february <- sample %>% 
+  filter(SampleDate == "2/28/2013")
+
+feb2 <- sampeffort3 %>% 
+  filter(Date == "2013-02-28")
+
+#5226 missing a check day the day before
+#5379 may be entered wrong, 19860 instead of 14860?
+#5811 note on data sheet states rev counter seems wrong but data sheets confirm revs
+#6173 data sheets confirm rev counter number recorded
+#6435 rev counter entered with an extra 0 confirmed on data sheet, should be 69832
+#6823, 6824, 6825, 6979 all same day - 2 set, 2 pull numbers match data sheets
+#6868, 6869, 6870, 6871 all same day - 2 set 2 pull - numbers match data sheets
+# need to ensure formula for calculating revs is in order of date AND time to calculate correct revs
+#6898 likely missing a 0 in rev counter number due to spaces on datasheet - flag
+#7413 no set rev counter as noted in comments - flag
+#7657 date was entered wrong, is 6/27/17 (2 data sheets in a day) not 6/28/17
+#8668 revs are 321484 from datasheet not 321984
+#10704 revs should be 104604 based on datasheet
+
+
+sampeffort3$Rev.Counter[sampeffort3$SampleID == 6435] <- 69832
+sampeffort3$Rev.Counter[sampeffort3$SampleID == 6925] <- 103007 #confirmed with datasheet
+sampeffort3$Rev.Counter[sampeffort3$SampleID == 10704] <- 104604 #confirmed with datasheet
+sampeffort3$Rev.Counter[sampeffort3$SampleID == 8668] <- 321484 # confirmed with datasheet
+
 
 sampeffort6 <- sampeffort3 %>% 
-  rename(RevCounter = Rev.Counter) %>% 
   filter(is.na(RevCounter)) %>% 
   mutate(RevCounter=as.character(RevCounter))
 str(sampeffort5)
 
 sampeffort3 <- bind_rows(sampeffort6, sampeffort5) %>% 
   select(-c(Week, PrevRevs, TotalOldRevs))
+  
 
 #calculate effort in hours
 sampeffortHours <- sampeffort3 %>%
@@ -211,93 +249,8 @@ sampeffortHours <- sampeffort3 %>%
   select(-SampleDate) %>%
   group_by(MethodCode) %>%
   mutate(effort.hrs = ifelse(TrapStatus == "Set", 0, as.numeric(difftime(DateTime,lag(DateTime), units = "hours")))) %>%
-  arrange(MethodCode, DateTime) %>% 
-  relocate(RevCounter, .after = DateTime)
-
-# remove last date in 1999 used to calculate hours for Jan'20 (sample ID 378)
-# sampeffort.e.2<-sampeffort.e[!(sampeffort.e$SampleID==378),]
-```
-
-# QA/QC hours
-```{r}
-#search for errors via plotting
-ggplot(sampeffortHours, aes(x=DateTime, y=effort.hrs)) + geom_point()
-
-# limit to doing this starting 2010 for now.
-qc <- sampeffortHours %>%
-  mutate(doweek = wday(DateTime, label= TRUE)) %>%
-  select(SampleID, StationCode, Date, doweek, effort.hrs, TrapStatus, SampleTime, everything()) %>%
-  filter(Date> as.Date("2009-12-31")) %>%
-  arrange(MethodCode, DateTime)
-
-outliers <- subset(qc, effort.hrs>40) %>%
-  arrange(MethodCode, desc(effort.hrs))
-
-negatives <- subset(qc, TotalRevs <0) %>% 
-  arrange(MethodCode)
-
-highvalues <- subset(qc, TotalRevs > 100000) %>% 
-  arrange(MethodCode)
-
-# Fix some values
-qc2 <- qc 
-
-# Calculate median for an estimate replacement value
-qc2 %>% group_by(MethodCode) %>%
-  summarize(median(effort.hrs))
-
-#FYKE
-qc2$effort.hrs[qc$SampleID == 2675] <- 119 # Need a "set" entry for 10/5/2007 @ 10:30. Data sheet says set at Friday 10:30
-qc2$effort.hrs[qc$SampleID == 6566] <- 24 # Added estimate, missing a "set" entry for 10/5/2015. Don't see a data sheet. 
-qc2$effort.hrs[qc$SampleID == 7827] <- 24 # Added estimate, missing a "set" entry for 11/20/2017. Don't see a data sheet. 
-qc2$effort.hrs[qc$SampleID == 994] <- 24 # Added estimate, possibly missing a "set" entry for 2/18/2008, but not sure. Don't see a data sheet. 
-qc2$effort.hrs[qc$SampleID == 2980] <- 24 # Added estimate, possibly missing a "set" entry for 5/22/2008, but not sure. Don't see a data sheet. 
-qc2$effort.hrs[qc$SampleID == 3131] <- 24 # Added estimate, possibly missing a "set" entry for 11/4/2008, but not sure. Don't see a data sheet.
-qc2$effort.hrs[qc$SampleID == 2858] <- 24 # Added estimate, possibly missing a "set" entry for 11/4/2008, but not sure. Don't see a data sheet.
-qc2$effort.hrs[qc$SampleID == 7827] <- 24 # Added estimate, possibly missing a "set" entry for 11/20/2017, but not sure. Don't see a data sheet.
-# qc2$effort.hrs[qc$SampleID == 9140] <- 24 # 12/2/2020 PCS not found in database. Needs to be entered (data sheet exists).
-
-# RSTR
-qc2$effort.hrs[qc$SampleID == 3782] <- 3.5 # Not sure if this is right, but estimated
-# qc2$effort.hrs[qc$SampleID == 8505] <- 23 # 4/10/2019 STTD not found in database. Needs to be entered (data sheet exists).
+  arrange(MethodCode, DateTime) 
 
 
-# 12/2/2020 and 4/10/2019 entered into database on 7/20/2023, included in 2023 data pull before publishing
-
-#saw some odd ones where effort = 0, sample ID: 6598 (duplicated entry), 7065 (duplicated entry), 8013 (duplicated entry) - remove all duplicates, be sure to make sure fish data matches up okay
-  qc2<-qc2[!(qc2$SampleID==6598),]
-  qc2<-qc2[!(qc2$SampleID==7065),]
-  qc2<-qc2[!(qc2$SampleID==8013),]
-
-#search for status NA's and change value in cell to keep them from being removed along with the 4's
-qc2$GearConditionCode[is.na(qc2$GearConditionCode)] <- "not entered"
-# Remove Condition Code = 4 (because that means fish were not sampled)
-qc3 <- filter(qc2, GearConditionCode !=4)
-
-#plot again
-# Replot
-ggplot(qc3, aes(x=DateTime, y=effort.hrs)) + geom_point() + facet_grid(~MethodCode)+
-  scale_x_datetime(date_breaks = "6 months")
-```
-
-# Double check
-```{r}
-#make sure all have effort hours
-nas <- dplyr::filter(qc3, is.na(effort.hrs))
-
-#change ID 6954 back to no time entry so it matches fish data
-# qc.sampeffort$DateTime[qc.sampeffort$SampleID == 6954] <- NA
-
-#filter down to only include date, station, method, and hours
-sampeffort.hours<- select(qc3, c(StationCode, MethodCode, Date, DateTime, SampleID, TrapStatus, Tide, effort.hrs, RevCounter, TotalRevs, Comments)) %>%
-  rename(SampleDate = Date,
-         Datetime = DateTime) %>%
-  filter(!is.na(effort.hrs)) %>%
-  arrange(MethodCode, Datetime)
-```
-
-#write new .csv based on calculated effort
-```{r}
-write.csv(sampeffort.hours, file = "data_raw/YBFMP_TrapHours_2010_2025.csv", row.names = FALSE)
-```
-
+rev <- sampeffortHours %>% 
+  filter(Date == "2013-02-22")
