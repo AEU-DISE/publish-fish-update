@@ -254,3 +254,63 @@ sampeffortHours <- sampeffort3 %>%
 
 rev <- sampeffortHours %>% 
   filter(Date == "2013-02-22")
+
+
+
+salmgen <- salm_gen_clean %>% 
+  mutate(Comments_SalmonDataUsage = case_when(FishGenID == "2024_ACHN_001"  ~ NA,
+                                              FishGenID == "2024_ACHN_002" ~ NA,
+                                              FishGenID == "2024_ACHN_003" ~ NA,
+                                              FishGenID == "2024_ACHN_004" ~ NA,
+                                              FishGenID == "2024_ACHN_005" ~ NA,
+                                              FishGenID == "2024_ACHN_006" ~ NA,
+                                              FishGenID == "2024_ACHN_007" ~ NA,
+                                              FishGenID == "2024_ACHN_008"  ~ NA,
+                                              FishGenID == "2024_ACHN_009" ~ NA,
+                                              FishGenID == "2024_ACHN_010" ~ NA,
+                                              FishGenID == "2024_ACHN_011" ~ NA,
+                                              FishGenID == "2024_ACHN_012" ~ NA,
+                                              FishGenID == "2024_ACHN_013" ~ NA,
+                                              FishGenID == "2024_ACHN_014" ~ NA,
+                                              FishGenID == "2024_ACHN_015" ~ NA,
+                                              FishGenID == "2024_ACHN_016" ~ NA,
+                                              FishGenID == "2024_ACHN_017" ~ NA,
+                                              FishGenID == "2024_ACHN_018" ~ NA,
+                                              FishGenID == "2024Ad_plus-W_007" ~ NA,
+                                              FishGenID == "2024Ad_plus-W_008" ~ NA,
+                                              FishGenID == "2024Ad_plus-W_009" ~ NA,
+                                              TRUE ~ Comments_SalmonDataUsage))
+
+effort_final <- Effort_alone %>%
+  mutate(TrapHours = replace(TrapHours, EventID == 5029, 23.86667),
+         TrapHours = replace(TrapHours, EventID == 6821, 25.4666667
+         )) %>%
+  filter(EventID %in% filterEventID) %>%
+  filter(!EventID %in% c(6820, 5028)) %>% 
+  mutate(CommentRevs = case_when(TotalRevs <0 ~ "Negative Revs",
+                                 TRUE ~ as.character("")))
+
+checknegative <- effort_final %>% 
+  filter(TotalRevs < 0)
+
+
+total_catch_all <- total_catch_wide %>%
+  pivot_longer(cols = first_org:last_org,names_to = "OrganismCode", values_to = "Count") %>% 
+  left_join(fish_sample_cleaned %>% select(EventID, Datetime, StationCode))%>%
+  arrange(Datetime, StationCode)%>%
+  mutate(Year = year(Datetime),
+         Date = date(Datetime),
+         Time = hms::as_hms(Datetime))%>%
+  group_by(Datetime, StationCode, OrganismCode, Year)%>%
+  mutate(SampleID = paste0(Date, "_", Time, "_", StationCode, "_", OrganismCode))
+
+
+total_catch_wide$Datetime <- ymd_hm(total_catch_wide$Datetime)
+samp2$Time <- strptime(samp2$Time, format = "%H:%M", tz = "") %>%
+  strftime(samp2$Time, format = "%H:%M:%S", tz = "", usetz = FALSE)
+samp2$Time <- hms::as_hms(samp2$Time)
+
+
+
+
+

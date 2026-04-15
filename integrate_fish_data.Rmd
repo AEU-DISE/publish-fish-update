@@ -11,6 +11,7 @@ Code for joining fish data together
 
 ##updated 10-10-23 for 2023 update L.Vance
 #updated 3-27-25 for 2024 update L.Vance
+# updated 4-15-26 for 2025 update L.Vance
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -55,10 +56,10 @@ sample_locations <- left_join(event, station %>% select(StationCode, StationName
 2. WQ data + Total catch, CPUE: This is the version written for EDI
 ```{r}
 sample_effort <- left_join(event, effort) %>%
-  select(-SeineLength, -SeineDepth, -SeineWidth)
+  select(-SeineLength, -SeineDepth, -SeineWidth, RevCounter)
 
 catch <- left_join(sample_effort, total_catch) %>%
-  relocate(c(SeineVolume, TrapStatus, TrapHours), .after = Count) %>%
+  relocate(c(SeineVolume, TrapStatus, TrapHours, TotalRevs), .after = Count) %>%
   dplyr::filter(!TrapStatus %in% "Set")
 
 catch_names <- left_join(catch, taxonomy %>% select(OrganismCode, IEPFishCode)) %>%

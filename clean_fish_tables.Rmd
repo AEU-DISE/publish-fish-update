@@ -330,11 +330,13 @@ unique(seine_clean$Tide_Seine)
 ### Trap Effort
 ```{r}
 # Trap
-trap_clean <- left_join(fish_ref_clean %>% select(StationCode, MethodCode,SampleDate, Datetime, EventID),trap %>% select(EventID = SampleID, Comments, TrapStatus, Tide)) %>%
-  mutate(effort.hrs = NA) %>%
+trap_clean <- left_join(fish_ref_clean %>% select(StationCode, MethodCode,SampleDate, Datetime, EventID),trap %>% select(EventID = SampleID, Comments, TrapStatus, Tide, Rev.Counter)) %>%
+  mutate(effort.hrs = NA,
+         TotalRevs = NA) %>%
   rename(TrapComments = Comments,
-         EffortHours = effort.hrs) %>%
-  select(StationCode, MethodCode,SampleDate, Datetime, EventID, TrapStatus, Tide, EffortHours, TrapComments) %>%
+         EffortHours = effort.hrs,
+         RevCounter = Rev.Counter) %>%
+  select(StationCode, MethodCode,SampleDate, Datetime, EventID, TrapStatus, Tide, EffortHours, RevCounter, TotalRevs, TrapComments) %>%
   filter(SampleDate<as.Date("2010-01-01"),
          MethodCode %in% c("FKTR", "RSTR")) %>%
    mutate(across(.cols = c(Tide, TrapStatus), .fns = na_if, ""))
@@ -410,6 +412,28 @@ salm_gen_clean <- salm_gen %>%
     GeneticID2 %in% c("U", "")~ "n/p", 
     TRUE ~ as.character(GeneticID2))) %>%
   mutate(Comments_SalmonDataUsage = "Please contact Mariah Meek (mhmeek@msu.edu) if you wish to share or publish any salmonid genetics data") %>%
+    mutate(Comments_SalmonDataUsage = case_when(FishGenID == "2024_ACHN_001"  ~ NA,
+                                              FishGenID == "2024_ACHN_002" ~ NA,
+                                              FishGenID == "2024_ACHN_003" ~ NA,
+                                              FishGenID == "2024_ACHN_004" ~ NA,
+                                              FishGenID == "2024_ACHN_005" ~ NA,
+                                              FishGenID == "2024_ACHN_006" ~ NA,
+                                              FishGenID == "2024_ACHN_007" ~ NA,
+                                              FishGenID == "2024_ACHN_008"  ~ NA,
+                                              FishGenID == "2024_ACHN_009" ~ NA,
+                                              FishGenID == "2024_ACHN_010" ~ NA,
+                                              FishGenID == "2024_ACHN_011" ~ NA,
+                                              FishGenID == "2024_ACHN_012" ~ NA,
+                                              FishGenID == "2024_ACHN_013" ~ NA,
+                                              FishGenID == "2024_ACHN_014" ~ NA,
+                                              FishGenID == "2024_ACHN_015" ~ NA,
+                                              FishGenID == "2024_ACHN_016" ~ NA,
+                                              FishGenID == "2024_ACHN_017" ~ NA,
+                                              FishGenID == "2024_ACHN_018" ~ NA,
+                                              FishGenID == "2024Ad_plus-W_007" ~ NA,
+                                              FishGenID == "2024Ad_plus-W_008" ~ NA,
+                                              FishGenID == "2024Ad_plus-W_009" ~ NA,
+                                              TRUE ~ Comments_SalmonDataUsage)) %>% 
   select(SalmGeneticRowID, FishGenID, GeneticID, Probability1 = Prob1, GeneticID2, Probability2 = Prob2, Comments_Salmon, Comments_SalmonDataUsage)
 unique(salm_gen_clean$GeneticID)
 
@@ -579,7 +603,7 @@ Sample_effort_clean <- Sample_effort_seine %>%
 ### h) Convert to 1 effort table, 1 environmental/event table
 ```{r}
 Effort_alone <- Sample_effort_clean %>%
-  select(EventID, SeineLength, SeineWidth, SeineDepth, SeineVolume = Volume, TrapStatus, TrapHours = EffortHours)
+  select(EventID, SeineLength, SeineWidth, SeineDepth, SeineVolume = Volume, TrapStatus, TrapHours = EffortHours, RevCounter, TotalRevs)
 
 Sample_alone <- Sample_effort_clean %>%
   select(EventID, StationCode, Datetime, SampleDate, WaterTemp, SpecificConductance, Conductivity, Turbidity, DO, pH, Secchi, Tide, WeatherCode, VegetationRank,SubstrateCode, HabitatType, MicrocystisRank, MethodCode, GearCode, GearConditionCode, SampleAltered,  FieldComments)
@@ -1037,7 +1061,9 @@ effort_final <- Effort_alone %>%
          TrapHours = replace(TrapHours, EventID == 6821, 25.4666667
 )) %>%
   filter(EventID %in% filterEventID) %>%
-    filter(!EventID %in% c(6820, 5028))
+    filter(!EventID %in% c(6820, 5028)) %>% 
+  mutate(CommentRevs = case_when(TotalRevs <0 ~ "Negative Revs",
+                                 TRUE ~ as.character("")))
 ```
 
 ### d) Add in zeroes for total catch
