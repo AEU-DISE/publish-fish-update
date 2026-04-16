@@ -56,7 +56,7 @@ sample_locations <- left_join(event, station %>% select(StationCode, StationName
 2. WQ data + Total catch, CPUE: This is the version written for EDI
 ```{r}
 sample_effort <- left_join(event, effort) %>%
-  select(-SeineLength, -SeineDepth, -SeineWidth, RevCounter)
+  select(-SeineLength, -SeineDepth, -SeineWidth, -RevCounter)
 
 catch <- left_join(sample_effort, total_catch) %>%
   relocate(c(SeineVolume, TrapStatus, TrapHours, TotalRevs), .after = Count) %>%
@@ -66,7 +66,7 @@ catch_names <- left_join(catch, taxonomy %>% select(OrganismCode, IEPFishCode)) 
   relocate(IEPFishCode, .after = OrganismCode)
 ```
 
-To calculate CPUE (not units are different for BSEIN (catch/volume) vs traps (catch/hr))
+To calculate CPUE (note units are different for BSEIN (catch/volume) vs traps (catch/hr))
 ```{r}
 catch_CPUE <- catch_names %>%
    mutate(CPUE = ifelse(MethodCode == "BSEIN", Count/SeineVolume,
